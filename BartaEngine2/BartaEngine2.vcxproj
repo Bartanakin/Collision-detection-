@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{943caf65-48bc-4acc-9bff-73f0a600e997}</ProjectGuid>
+    <RootNamespace>BartaEngine2</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)SFML-2.5.1\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)SFML-2.5.1\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)SFML-2.5.1\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)SFML-2.5.1\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)SFML-2.5.1\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)SFML-2.5.1\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="Collisions\CheckCollisionVisitors\CircleCircleCheckCollisionVisitor.h" />
+    <ClInclude Include="Collisions\CheckCollisionVisitorInterface.h" />
+    <ClInclude Include="Collisions\CollisionDetectionStrategies\DynamicCollisionDetectionStrategy.h" />
+    <ClInclude Include="Dynamics\ConstVelocityDynamicsUpdateStrategy.h" />
+    <ClInclude Include="Dynamics\DynamicsAwareInterface.h" />
+    <ClInclude Include="Dynamics\DynamicsDTO.h" />
+    <ClInclude Include="Dynamics\DynamicsUpdateStrategyInterface.h" />
+    <ClInclude Include="Dynamics\TimerInterface.h" />
+    <ClInclude Include="Events\EventSubscriberInterface.h" />
+    <ClInclude Include="Events\BartaEventLoggerInterface.h" />
+    <ClInclude Include="Events\Events\BallsCollisionEvent.h" />
+    <ClInclude Include="Graphics\BartaGraphicsBridgeInterface.h" />
+    <ClInclude Include="BartaObject.h" />
+    <ClInclude Include="BartaObjectManager.h" />
+    <ClInclude Include="BartaSprite.h" />
+    <ClInclude Include="Collisions\CollisionDetectionStrategyInterface.h" />
+    <ClInclude Include="Events\BartaEvent.h" />
+    <ClInclude Include="BartaShapes\Circle.h" />
+    <ClInclude Include="Graphics\SFML_Bridge\ResourceMatcherInterface.h" />
+    <ClInclude Include="Hitbox\CircleHitbox.h" />
+    <ClInclude Include="Hitbox\HitboxInterface.h" />
+    <ClInclude Include="Hitbox\HitboxAwareInterface.h" />
+    <ClInclude Include="Events\Events\LeftClickEvent.h" />
+    <ClInclude Include="log.h" />
+    <ClInclude Include="Graphics\Resource.h" />
+    <ClInclude Include="Geometrics\Vector2f.h" />
+    <ClInclude Include="Graphics\SFML_GraphicsBridge.h" />
+    <ClInclude Include="Events\SimpleEventLogger.h" />
+    <ClInclude Include="Geometrics\TransformableInterface.h" />
+    <ClInclude Include="Geometrics\SFML_Transformable.h" />
+    <ClInclude Include="Graphics\SFML_Bridge\NullDrawableObject.h" />
+    <ClInclude Include="Graphics\SFML_Bridge\SpriteResourceMatcher.h" />
+    <ClInclude Include="Graphics\SFML_Bridge\ResourceContainerInterface.h" />
+    <ClInclude Include="Graphics\SFML_Bridge\SimpleResourceContainer.h" />
+    <ClInclude Include="ObjectManagerInterface.h" />
+    <ClInclude Include="Collisions\CollisionDetectionStrategies\StaticCollisionDetectionStrategy.h" />
+    <ClInclude Include="Dynamics\Timers\SFML_Timer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BartaObjectManager.cpp" />
+    <ClCompile Include="BartaSprite.cpp" />
+    <ClCompile Include="BartaShapes\Circle.cpp" />
+    <ClCompile Include="Collisions\CheckCollisionVisitors\CircleCircleCheckCollisionVisitor.cpp" />
+    <ClCompile Include="Collisions\CollisionDetectionStrategies\DynamicCollisionDetectionStrategy.cpp" />
+    <ClCompile Include="Dynamics\ConstVelocityDynamicsUpdateStrategy.cpp" />
+    <ClCompile Include="Geometrics\Vector2f.cpp" />
+    <ClCompile Include="Hitbox\CircleHitbox.cpp" />
+    <ClCompile Include="Graphics\SFML_GraphicsBridge.cpp" />
+    <ClCompile Include="Events\SimpleEventLogger.cpp" />
+    <ClCompile Include="Geometrics\SFML_Transformable.cpp" />
+    <ClCompile Include="Graphics\SFML_Bridge\SpriteResourceMatcher.cpp" />
+    <ClCompile Include="Graphics\SFML_Bridge\SimpleResourceContainer.cpp" />
+    <ClCompile Include="Collisions\CollisionDetectionStrategies\StaticCollisionDetectionStrategy.cpp" />
+    <ClCompile Include="Dynamics\Timers\SFML_Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ApplicationArchive.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BartaEngine2.aps" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BartaEngine2.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

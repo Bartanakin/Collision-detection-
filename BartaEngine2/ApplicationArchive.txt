@@ -1,0 +1,73 @@
+#include "Application.h"
+#include <iostream>
+#include"BartaObject.h"
+#include"log.h"
+#include"BartaEvent.h"
+
+namespace Barta{
+	Application::Application()
+		:window( sf::VideoMode( 800, 600 ), "SFML works!" ),
+		viewContolerEnabled( true ),
+		isViewChanging( false ),
+		lastMousePosition( { 0,0 } ),
+		currentView(sf::View())
+	{
+		window.setFramerateLimit( 60 );
+	}
+
+	Application::~Application(){}
+
+	void Application::run(){
+
+		while( this->window.isOpen() ){
+			this->checkLogic();
+			this->checkEvents();
+			this->renderFrame();
+		}
+	}
+
+	void Application::renderFrame(){
+		this->window.clear();
+		BartaObjectInterface::draw( this->window );
+		this->window.display();
+	}
+
+	void Application::checkEvents(){
+		BartaEvent event( this->currentView );
+		while( window.pollEvent( event ) ){
+			if( event.type == sf::Event::Closed )
+				window.close();
+			if( this->viewContolerEnabled ){
+				if( event.type == sf::Event::MouseButtonPressed && sf::Mouse::Button::Left == event.mouseButton.button ){ 
+					isViewChanging = true;
+					lastMousePosition = sf::Vector2f( event.mouseButton.x, event.mouseButton.y );
+					LOG( event.getMouseButtonPosition().x << " " << event.getMouseButtonPosition().y );
+				}
+				else if( event.type == sf::Event::MouseButtonReleased && sf::Mouse::Button::Left == event.mouseButton.button ){ 
+					isViewChanging = false;
+				}
+				else if( isViewChanging ){
+					currentView = window.getView();
+					currentView.move( { lastMousePosition.x - event.mouseMove.x, lastMousePosition.y - event.mouseMove.y } );
+					lastMousePosition = sf::Vector2f( event.mouseMove.x ,event.mouseMove.y );
+					LOG( event.mouseMove.x << " " << event.mouseMove.y);
+					window.setView( currentView );
+				}
+			}
+			for( auto& pair : eventListeners ){
+				if( pair.first( event ) ) pair.second();
+			}
+		}
+	}
+
+
+	void Application::addEventListener( std::function<bool( BartaEvent& )> condition, std::function<void()> action ){
+		eventListeners.push_back( std::make_pair( condition, action ) );
+	}
+
+	const sf::View& Application::getView() const{
+		return this->currentView;
+	}
+
+
+}
