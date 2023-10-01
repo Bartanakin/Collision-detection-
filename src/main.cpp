@@ -1,21 +1,17 @@
-#include <SFML/Graphics.hpp>
+#include "BartaGraph.h"
+#include "Dynamics/Timers/SFML_Timer.h"
+#include "Dynamics/Timers/FrameLimitTimerProxy.h"
+#include "Geometrics/Math/QuadraticEquation.h"
+#include <iostream>
 
-int main()
-{
-    auto window = sf::RenderWindow{ { 1920u, 1080u }, "CMake SFML Project" };
-    window.setFramerateLimit(144);
+int main() {
 
-    while (window.isOpen())
-    {
-        for (auto event = sf::Event{}; window.pollEvent(event);)
-        {
-            if (event.type == sf::Event::Closed)
-            {
-                window.close();
-            }
-        }
+	Barta::Application* app = new BartaGraph(new Barta::FrameLimitTimerProxy(
+		new Barta::SFML_Timer(),
+		0.0f
+	));
+	app->run();
+	delete app;
 
-        window.clear();
-        window.display();
-    }
+	return 0;
 }
