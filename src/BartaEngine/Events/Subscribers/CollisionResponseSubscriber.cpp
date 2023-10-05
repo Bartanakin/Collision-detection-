@@ -6,7 +6,7 @@ Barta::CollisionResponseSubscriber::CollisionResponseSubscriber(BartaEventLogger
 
 }
 
-bool Barta::CollisionResponseSubscriber::handle(const CollisionEvent& event) {
+bool Barta::CollisionResponseSubscriber::handle(CollisionEvent& event) {
 	auto& [testResult, firstObject, secondObject] = event.getTestResult();
 	if (testResult.staticCollision) {
 		return true;
@@ -15,16 +15,16 @@ bool Barta::CollisionResponseSubscriber::handle(const CollisionEvent& event) {
 	const auto& firstDynamics = firstObject->getDynamicsDTO();
 	const auto& secondDynamics = secondObject->getDynamicsDTO();
 
-	float massInverted = 0.;
+	float massInverted = 0.f;
 	if (!firstDynamics.hasInfiniteMass) {
-		massInverted += 1. / firstDynamics.mass;
+		massInverted += 1.f / firstDynamics.mass;
 	}
 
 	if (!secondDynamics.hasInfiniteMass) {
-		massInverted += 1. / secondDynamics.mass;
+		massInverted += 1.f / secondDynamics.mass;
 	}
 
-	if (massInverted == 0.) {
+	if (massInverted == 0.f) {
 		return true;
 	}
 
@@ -41,7 +41,7 @@ bool Barta::CollisionResponseSubscriber::isValid() const noexcept {
 
 void Barta::CollisionResponseSubscriber::calculateNewVelocity(
 	float j,
-	CollisionAwareInterface const*  dynamicsObject,
+	CollisionAwareInterface* dynamicsObject,
 	Vector2f normVector
 ) const noexcept {
 	const auto& oldDynamics = dynamicsObject->getDynamicsDTO();
@@ -49,9 +49,8 @@ void Barta::CollisionResponseSubscriber::calculateNewVelocity(
 		return;
 	}
 
-	//auto xd = DynamicsDTO(oldDynamics.velocity + normVector * (j / oldDynamics.mass), oldDynamics.hasInfiniteMass, oldDynamics.mass);
-	this->eventLogger.logEvent(std::unique_ptr<const DynamicsChangeEvent>(new DynamicsChangeEvent(
-		static_cast<DynamicsAwareInterface const*>(dynamicsObject),
-		DynamicsDTO(oldDynamics.velocity + normVector * (j / oldDynamics.mass), oldDynamics.hasInfiniteMass, oldDynamics.mass)
+	this->eventLogger.logEvent(std::unique_ptr<DynamicsChangeEvent>(new DynamicsChangeEvent(
+		static_cast<DynamicsAwareInterface*>(dynamicsObject),
+		DynamicsDTO(normVector * (j / oldDynamics.mass), oldDynamics.hasInfiniteMass, oldDynamics.mass)
 	)));
 }

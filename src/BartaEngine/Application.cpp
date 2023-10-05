@@ -4,32 +4,24 @@
 #include "Events/Events/CollisionEvent.h"
 
 Barta::Application::Application(
-	BartaGraphicsBridgeInterface* const graphicsBridge,
-	BartaEventLoggerInterface* const eventLogger,
-	BartaEventLoggerInterface* const postDynamicsEventLogger,
-	ObjectManagerInterface* const objectManager,
-	TimerInterface* const timer,
-	DynamicsUpdateStrategyInterface* const dynamicsUpdateStrategy,
-	CollisionTestExecutorInterface* const collisionTestExecutor
+	std::unique_ptr<BartaGraphicsBridgeInterface> graphicsBridge,
+	std::unique_ptr<BartaEventLoggerInterface> eventLogger,
+	std::unique_ptr<BartaEventLoggerInterface> postDynamicsEventLogger,
+	std::unique_ptr<ObjectManagerInterface> objectManager,
+	std::unique_ptr<TimerInterface> timer,
+	std::unique_ptr<DynamicsUpdateStrategyInterface> dynamicsUpdateStrategy,
+	std::unique_ptr<CollisionTestExecutorInterface> collisionTestExecutor
 ):
-	graphicsBridge(graphicsBridge),
-	eventLogger(eventLogger),
-	postDynamicsEventLogger(postDynamicsEventLogger),
-	objectManager(objectManager),
-	timer(timer),
-	dynamicsUpdateStrategy(dynamicsUpdateStrategy),
-	collisionTestExecutor(collisionTestExecutor) {
+	graphicsBridge(std::move(graphicsBridge)),
+	eventLogger(std::move(eventLogger)),
+	postDynamicsEventLogger(std::move(postDynamicsEventLogger)),
+	objectManager(std::move(objectManager)),
+	timer(std::move(timer)),
+	dynamicsUpdateStrategy(std::move(dynamicsUpdateStrategy)),
+	collisionTestExecutor(std::move(collisionTestExecutor)) {
 }
 
-Barta::Application::~Application(){
-	delete this->graphicsBridge;
-	delete this->eventLogger;
-	delete this->postDynamicsEventLogger;
-	delete this->objectManager;
-	delete this->timer;
-	delete this->dynamicsUpdateStrategy;
-	delete this->collisionTestExecutor;
-}
+Barta::Application::~Application() {}
 
 void Barta::Application::run(){
 	this->graphicsBridge->createWindow( Vector2f( 700.f, 700.f ), "Hello world!" );
@@ -40,7 +32,7 @@ void Barta::Application::run(){
 			this->checkLogic();
 			for (const auto& testResult : this->collisionTestExecutor->executeTests(this->objectManager->getCollidableList())) {
 				counter++;
-				this->eventLogger->logEvent(std::unique_ptr<const CollisionEvent>(new CollisionEvent(testResult, timer->getCurrentDeltaTime())));
+				this->eventLogger->logEvent(std::unique_ptr<CollisionEvent>(new CollisionEvent(testResult, timer->getCurrentDeltaTime())));
 			}
 
 			this->eventLogger->runSubscribers();

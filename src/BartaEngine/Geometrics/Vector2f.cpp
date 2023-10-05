@@ -7,12 +7,11 @@ Barta::Vector2f::Vector2f( const Vector2f& second ) : x( second.x ), y( second.y
 
 Barta::Vector2f::Vector2f( sf::Vector2f vector ) : x( vector.x ), y( vector.y ){}
 
-float Barta::Vector2f::getX() const{
-	return this->x;
-}
+Barta::Vector2f& Barta::Vector2f::operator=(const Barta::Vector2f& second) {
+    this->x = second.x;
+    this->y = second.y;
 
-float Barta::Vector2f::getY() const{
-	return this->y;
+    return *this;
 }
 
 Barta::Vector2f Barta::Vector2f::operator*(float scalar) const noexcept {

@@ -9,9 +9,9 @@ namespace Barta {
 		constexpr static const float COEFFICIENT_OF_ELISTICITY = 1.f;
 
 		CollisionResponseSubscriber(BartaEventLoggerInterface& eventLogger);
-		~CollisionResponseSubscriber() = default;
+		~CollisionResponseSubscriber() noexcept = default;
 
-		bool handle(const CollisionEvent& event) override;
+		bool handle(CollisionEvent& event) override;
 
 		bool isValid() const noexcept override;
 
@@ -21,7 +21,7 @@ namespace Barta {
 
 		void calculateNewVelocity(
 			float j,
-			CollisionAwareInterface const* dynamicsObject,
+			CollisionAwareInterface* dynamicsObject,
 			Vector2f normVector
 		) const noexcept;
 

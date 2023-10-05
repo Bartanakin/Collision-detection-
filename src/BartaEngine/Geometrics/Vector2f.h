@@ -12,8 +12,9 @@ namespace Barta{
 		Vector2f( float x, float y );
 		Vector2f( const Vector2f& second );
 		Vector2f( sf::Vector2f vector );
-		inline float getX() const;
-		inline float getY() const;
+        Barta::Vector2f& operator=(const Barta::Vector2f&);
+		inline float getX() const { return this->x; }
+		inline float getY() const { return this->y; }
 
 		Vector2f operator*(float scalar) const noexcept;
 
@@ -34,4 +35,3 @@ namespace Barta{
 
 	std::ostream& operator << ( std::ostream&, const Vector2f& );
 }
-

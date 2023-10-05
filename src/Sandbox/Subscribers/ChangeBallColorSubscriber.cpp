@@ -3,7 +3,7 @@
 ChangeBallColorSubscriber::ChangeBallColorSubscriber( Ball& ball )
 	: ball( ball ){}
 
-bool ChangeBallColorSubscriber::handle( const Barta::LeftClickEvent& event ){
+bool ChangeBallColorSubscriber::handle(Barta::LeftClickEvent& event){
 	if( !this->ball.getHitbox()->isWithin( event.getPosition() ) ){
 		return false;
 	}

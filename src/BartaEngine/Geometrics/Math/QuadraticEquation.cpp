@@ -3,6 +3,7 @@
 
 Barta::QuadraticEquation::QuadraticEquation( float A, float B, float C ) noexcept :
 	state( EquationInterface::State::UNSOLVED ),
+    solutions({}),
 	A( A ),
 	B( B ),
 	C( C )
@@ -37,6 +38,10 @@ Barta::QuadraticEquation& Barta::QuadraticEquation::operator=( QuadraticEquation
 Barta::QuadraticEquation::~QuadraticEquation() noexcept{}
 
 void Barta::QuadraticEquation::solve( const Method& method ){
+    if (method != Method::DEFAULT) {
+        return;
+    }
+
 	if( this->state != EquationInterface::State::UNSOLVED ){
 		return;
 	}

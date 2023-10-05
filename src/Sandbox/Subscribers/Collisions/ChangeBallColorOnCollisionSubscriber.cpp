@@ -5,8 +5,8 @@ ChangeBallColorOnCollisionSubscriber::ChangeBallColorOnCollisionSubscriber(Ball&
 {
 }
 
-bool ChangeBallColorOnCollisionSubscriber::handle(const Barta::CollisionEvent& event) {
-	if (!event.compareObjects((Barta::CollisionAwareInterface*) &this->ball1, (Barta::CollisionAwareInterface*) &this->ball2)) {
+bool ChangeBallColorOnCollisionSubscriber::handle(Barta::CollisionEvent& event) {
+	if (!event.compareObjects(static_cast<Barta::CollisionAwareInterface*>(&this->ball1), static_cast<Barta::CollisionAwareInterface*>(&this->ball2))) {
 		return false;
 	}
 

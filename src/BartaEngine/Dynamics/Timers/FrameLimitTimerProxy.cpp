@@ -2,16 +2,12 @@
 #include "FrameLimitTimerProxy.h"
 
 Barta::FrameLimitTimerProxy::FrameLimitTimerProxy(
-	TimerInterface* const timer,
+	std::unique_ptr<TimerInterface> timer,
 	const float frameTime
 ) :
-	timer( timer ),
+	timer( std::move(timer) ),
 	frameTime( frameTime )
 {}
-
-Barta::FrameLimitTimerProxy::~FrameLimitTimerProxy(){
-	delete this->timer;
-}
 
 float Barta::FrameLimitTimerProxy::restart(){
 	if( this->timer->getElapsedTimeOnRestart() < this->frameTime ){

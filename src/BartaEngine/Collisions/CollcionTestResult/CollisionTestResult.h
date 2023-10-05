@@ -6,11 +6,11 @@ namespace Barta {
 
 	struct CollisionTestResult {
 		const bool collisionDetected;
-		const bool staticCollision;
 		const float timePassed;
+		const bool staticCollision;
 		const Vector2f normVector;
 	
-		inline CollisionTestResult(
+		CollisionTestResult(
 			bool collisionDetected,
 			float timePassed,
 			bool staticCollision,

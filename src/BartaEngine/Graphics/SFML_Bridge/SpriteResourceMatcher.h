@@ -7,7 +7,7 @@
 namespace Barta{
 	class SpriteResourceMatcher : public RecourseMatcherInterface{
 	public:
-		SpriteResourceMatcher( ResourceContainerInterface* const resourceContainer );
+		SpriteResourceMatcher( std::unique_ptr<ResourceContainerInterface> resourceContainer );
 		virtual ~SpriteResourceMatcher();
 
 		void matchResource( const void* hash, const Resource resource ) override;
@@ -15,7 +15,7 @@ namespace Barta{
 		void drop( const void* hash ) override;
 	private:
 		std::unordered_map<const void*, sf::Sprite*> sf_spriteMap;
-		ResourceContainerInterface* const resourceContainer;
+		std::unique_ptr<ResourceContainerInterface> resourceContainer;
 
 		NullDrawableObject nullDrawableObject;
 	};

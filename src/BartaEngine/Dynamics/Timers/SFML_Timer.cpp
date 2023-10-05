@@ -2,7 +2,9 @@
 #include "SFML_Timer.h"
 
 Barta::SFML_Timer::SFML_Timer() :
-	sf_clock( sf::Clock() )
+	sf_clock( sf::Clock() ),
+    remainingDeltaTime(sf::Time(sf::Time::Zero)),
+    currentDeltaTime(sf::Time(sf::Time::Zero))
 {}
 
 Barta::SFML_Timer::~SFML_Timer(){}

@@ -4,8 +4,8 @@ ChangeBallOnCollisionWithAABB::ChangeBallOnCollisionWithAABB(Ball& ball, Block& 
 	ball(ball), block(block) {
 }
 
-bool ChangeBallOnCollisionWithAABB::handle(const Barta::CollisionEvent& event) {
-	if (!event.compareObjects((Barta::CollisionAwareInterface*) &this->ball, (Barta::CollisionAwareInterface*) &this->block)) {
+bool ChangeBallOnCollisionWithAABB::handle(Barta::CollisionEvent& event) {
+	if (!event.compareObjects(static_cast<Barta::CollisionAwareInterface*>(&this->ball), static_cast<Barta::CollisionAwareInterface*>(&this->block))) {
 		return false;
 	}
 

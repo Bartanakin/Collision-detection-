@@ -7,14 +7,14 @@
 namespace Barta{
 	class DynamicCollisionDetectionStrategy : public CollisionDetectionStrategyInterface{
 	public:
-		DynamicCollisionDetectionStrategy( MathLibraryInterface* const mathLibrary, const TimerInterface& timer );
-		virtual ~DynamicCollisionDetectionStrategy();
+		DynamicCollisionDetectionStrategy(std::unique_ptr<MathLibraryInterface> mathLibrary, const TimerInterface& timer);
+		virtual ~DynamicCollisionDetectionStrategy() noexcept = default;
 
 		virtual CollisionTestResult acceptCheckCollisionVisitor( const CheckCollisionVisitorInterface& checkCollisionVisitor ) const override;
 	private:
 		const TimerInterface& timer;
 
-		MathLibraryInterface* const mathLibrary;
+		std::unique_ptr<MathLibraryInterface> mathLibrary;
 	};
 }
 

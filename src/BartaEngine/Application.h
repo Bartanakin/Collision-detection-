@@ -13,14 +13,17 @@ namespace Barta{
 	class Application{
 	public:
 		Application( 
-			BartaGraphicsBridgeInterface* const graphicsBridge,
-			BartaEventLoggerInterface* const eventLogger,
-			BartaEventLoggerInterface* const postDynamicsEventLogger,
-			ObjectManagerInterface* const objectManager,
-			TimerInterface* const timer,
-			DynamicsUpdateStrategyInterface* const dynamicsUpdateStrategy,
-			CollisionTestExecutorInterface* const collisionTestExecutor
+			std::unique_ptr<BartaGraphicsBridgeInterface> graphicsBridge,
+			std::unique_ptr<BartaEventLoggerInterface> eventLogger,
+			std::unique_ptr<BartaEventLoggerInterface> postDynamicsEventLogger,
+			std::unique_ptr<ObjectManagerInterface> objectManager,
+			std::unique_ptr<TimerInterface> timer,
+			std::unique_ptr<DynamicsUpdateStrategyInterface> dynamicsUpdateStrategy,
+			std::unique_ptr<CollisionTestExecutorInterface> collisionTestExecutor
 		);
+        Application(const Application&) = delete;
+        Application(Application&&) = delete;
+        Application& operator=(const Application&) = delete;
 
 		virtual ~Application();
 
@@ -29,13 +32,13 @@ namespace Barta{
 		virtual void checkLogic() = 0;
 
 	protected:
-		BartaGraphicsBridgeInterface* const graphicsBridge;
-		BartaEventLoggerInterface* const eventLogger;
-		BartaEventLoggerInterface* const postDynamicsEventLogger;
-		ObjectManagerInterface* const objectManager;
-		TimerInterface* const timer;
-		DynamicsUpdateStrategyInterface* const dynamicsUpdateStrategy; 
-		CollisionTestExecutorInterface* const collisionTestExecutor;
+		std::unique_ptr<BartaGraphicsBridgeInterface> graphicsBridge;
+		std::unique_ptr<BartaEventLoggerInterface> eventLogger;
+		std::unique_ptr<BartaEventLoggerInterface> postDynamicsEventLogger;
+		std::unique_ptr<ObjectManagerInterface> objectManager;
+		std::unique_ptr<TimerInterface> timer;
+		std::unique_ptr<DynamicsUpdateStrategyInterface> dynamicsUpdateStrategy; 
+		std::unique_ptr<CollisionTestExecutorInterface> collisionTestExecutor;
 	};
 
 

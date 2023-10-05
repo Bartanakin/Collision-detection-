@@ -9,7 +9,7 @@ namespace Barta {
 		DynamicsChangeSubscriber() = default;
 		~DynamicsChangeSubscriber() = default;
 
-		bool handle(const DynamicsChangeEvent& event) override;
+		bool handle(DynamicsChangeEvent& event) override;
 
 		bool isValid() const noexcept override;
 

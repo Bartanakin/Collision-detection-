@@ -7,15 +7,15 @@ class Ball :
 	public Barta::CollisionAwareInterface {
 public:
 	Ball( Barta::Vector2f initialPosition, Barta::DynamicsDTO initialDynamics );
-	virtual ~Ball();
+	~Ball() noexcept = default;
 
 	bool isToBeDeleted() const override;
 
 	const Barta::TransformableInterface& getTransformable() const override;
 
-	const Barta::Resource getResourceId() const noexcept override;
+	Barta::Resource getResourceId() const noexcept override;
 
-	const Barta::Resource getBallCollor() const;
+	Barta::Resource getBallCollor() const;
 
 	void setBallCollor( Barta::Resource  resource );
 
@@ -28,8 +28,8 @@ public:
 	void setDynamicsDTO( const Barta::DynamicsDTO& ) override;
 
 private:
-	Barta::TransformableInterface* const transformable;
-	Barta::HitboxInterface* const hitbox;
+	std::unique_ptr<Barta::TransformableInterface> transformable;
+	std::unique_ptr<Barta::HitboxInterface> hitbox;
 	Barta::DynamicsDTO dynamicsDTO;
 
 	Barta::Resource ballColor;

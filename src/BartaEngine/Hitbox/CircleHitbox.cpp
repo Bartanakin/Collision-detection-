@@ -51,8 +51,6 @@ namespace Barta{
 	}
 
 	std::unique_ptr<const HitboxInterface> CircleHitbox::getTransformedHitbox( const TransformableInterface& transformable ) const{
-		int xd = 2;		// Compiler bug without this line
-
 		return std::unique_ptr<const HitboxInterface>( new CircleHitbox( transformable.getTransformedCircle( this->circle ) ) );
 	}
 }

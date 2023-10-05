@@ -1,6 +1,6 @@
 #pragma once
+#include "../../pch.h"
 #include "../TimerInterface.h"
-#include <SFML/Graphics.hpp>
 
 namespace Barta{
 

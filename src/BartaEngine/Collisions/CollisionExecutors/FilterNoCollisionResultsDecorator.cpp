@@ -21,5 +21,5 @@ Barta::CollisionTestExecutorInterface::ResultsList Barta::FilterNoCollisionResul
 		i = resultsList.erase(i);
 	}
 
-	return std::move(resultsList);
+	return resultsList;
 }

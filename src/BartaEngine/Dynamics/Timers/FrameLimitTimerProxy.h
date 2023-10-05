@@ -1,6 +1,5 @@
 #pragma once
 #include "../TimerInterface.h"
-#include <SFML/Graphics.hpp>
 
 namespace Barta{
 
@@ -9,8 +8,7 @@ namespace Barta{
 		/*
 			Time in seconds
 		*/
-		FrameLimitTimerProxy( TimerInterface* const timer, float frameTime );
-		~FrameLimitTimerProxy();
+		FrameLimitTimerProxy(std::unique_ptr<TimerInterface> timer, float frameTime);
 
 		float restart() override;
 
@@ -25,7 +23,7 @@ namespace Barta{
 		bool finished() override;
 
 	private:
-		TimerInterface* const timer;
+		std::unique_ptr<TimerInterface> timer;
 
 		const float frameTime;
 	};

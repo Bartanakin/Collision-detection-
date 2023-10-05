@@ -10,7 +10,7 @@ class ChangeBallOnCollisionWithAABB: public Barta::CollisionEventSubscriberInter
 	ChangeBallOnCollisionWithAABB(Ball& ball, Block& block) noexcept;
 	virtual ~ChangeBallOnCollisionWithAABB() noexcept = default;
 
-	bool handle(const Barta::CollisionEvent& event) override;
+	bool handle(Barta::CollisionEvent& event) override;
 
 	bool isValid() const noexcept override;
 

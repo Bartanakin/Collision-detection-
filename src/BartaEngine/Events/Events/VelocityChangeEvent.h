@@ -14,23 +14,24 @@ namespace Barta {
 		#endif
 	{
 		public:
-		DynamicsChangeEvent(DynamicsAwareInterface const* dynamicsAware, DynamicsDTO newDynamics) noexcept:
-			dynamicsAware(dynamicsAware), newDynamics(newDynamics) {
+		DynamicsChangeEvent(DynamicsAwareInterface* dynamicsAware, DynamicsDTO newDynamics) noexcept:
+			dynamicsAware(dynamicsAware), dynamicsDiff(newDynamics) {
 		}
 
-		DynamicsAwareInterface const* dynamicsAware;
-		DynamicsDTO newDynamics;
+		DynamicsAwareInterface* dynamicsAware;
+		DynamicsDTO dynamicsDiff;
 	};
 
 	template<>
-	class EventSubscriber<const DynamicsChangeEvent> {
+	class EventSubscriber<DynamicsChangeEvent> {
 		public:
+        virtual ~EventSubscriber() noexcept = default;
 
-		virtual bool handle(const DynamicsChangeEvent& event) = 0;
+		virtual bool handle(DynamicsChangeEvent& event) = 0;
 
 		virtual bool isValid() const noexcept = 0;
 	};
 
-	typedef EventSubscriber<const DynamicsChangeEvent> DynamicsChangeSubscriberInterface;
+	typedef EventSubscriber<DynamicsChangeEvent> DynamicsChangeSubscriberInterface;
 }
 

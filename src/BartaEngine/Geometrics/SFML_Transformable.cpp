@@ -2,14 +2,10 @@
 #include "SFML_Transformable.h"
 
 Barta::SFML_Transformable::SFML_Transformable()
-: transformable(new sf::Transformable) {}
+: transformable(std::make_unique<sf::Transformable>()) {}
 
-Barta::SFML_Transformable::SFML_Transformable( const SFML_Transformable& second )
-: transformable(new sf::Transformable(*second.transformable)) {}
-
-Barta::SFML_Transformable::~SFML_Transformable(){
-	delete this->transformable;
-}
+Barta::SFML_Transformable::SFML_Transformable(const SFML_Transformable& second)
+: transformable(std::make_unique<sf::Transformable>(*second.transformable)) {}
 
 Barta::Vector2f Barta::SFML_Transformable::getPosition() const {
 	return Vector2f(this->transformable->getPosition());

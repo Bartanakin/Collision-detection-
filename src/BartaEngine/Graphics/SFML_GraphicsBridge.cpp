@@ -6,17 +6,16 @@
 
 Barta::SFML_GraphicsBridge::SFML_GraphicsBridge() noexcept
 	: sf_window( nullptr ),
-	resourceMatcher( new Barta::SpriteResourceMatcher( new Barta::SimpleResourceContainer() ) )
+	resourceMatcher(std::make_unique<Barta::SpriteResourceMatcher>(std::make_unique<Barta::SimpleResourceContainer>()))
 {}
 
 Barta::SFML_GraphicsBridge::~SFML_GraphicsBridge(){
 	delete this->sf_window;
-	delete this->resourceMatcher;
 }
 
 void Barta::SFML_GraphicsBridge::createWindow( Vector2f size, std::string title ){
 	delete this->sf_window;
-	this->sf_window = new sf::RenderWindow( sf::VideoMode( size.getX(), size.getY() ), title );
+	this->sf_window = new sf::RenderWindow( sf::VideoMode( static_cast<unsigned int>(size.getX()), static_cast<unsigned int>(size.getY()) ), title );
 	this->sf_window->setFramerateLimit( 59 );
 }
 
@@ -25,7 +24,7 @@ void Barta::SFML_GraphicsBridge::drawObjects(const std::list<BartaObjectInterfac
 	this->sf_window->clear();
 
 	for( const auto& object : objects ){
-		auto hash = (const void*)object;
+		auto hash = static_cast<const void*>(object);
 		if( object->isToBeDeleted() ){
 			this->resourceMatcher->drop( hash );
 			continue;
@@ -51,7 +50,7 @@ bool Barta::SFML_GraphicsBridge::logEvents( BartaEventLoggerInterface& eventLogg
 
 			return false;
 		} if( event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Left ){
-			auto ptr = new LeftClickEvent( Vector2f( ( float )event.mouseButton.x, ( float )event.mouseButton.y ) );
+			auto ptr = new LeftClickEvent( Vector2f( static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y) ) );
 			eventLogger.logEvent( std::move(std::unique_ptr<LeftClickEvent>(ptr)) );
 		}
 	}
@@ -64,5 +63,5 @@ const sf::Transformable Barta::SFML_GraphicsBridge::convertTransformable(const T
 	auto myVector = myTransformable.getPosition();
 	newTransformable.setPosition(myVector.getX(), myVector.getY());
 
-	return std::move(newTransformable);
+	return newTransformable;
 }

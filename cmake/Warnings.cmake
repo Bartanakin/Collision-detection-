@@ -41,10 +41,13 @@ function(target_set_warnings)
         # Baseline
         -Wall
         -Wextra # reasonable and standard
-        -Wshadow # if a variable declaration shadows one from a parent context
+        # -Wshadow # if a variable declaration shadows one from a parent context
         -Wpedantic # warn if non-standard is used
         # C and C++ Warnings
-        -Wunused # warn on anything being unused
+        -Wunused-function
+        -Wunused-label
+        -Wunused-value
+        -Wunused-variable
         -Wformat=2 # warn on security issues around functions that format output
         -Wcast-align # warn for potential performance problem casts
         -Wconversion # warn on type conversions that may lose data

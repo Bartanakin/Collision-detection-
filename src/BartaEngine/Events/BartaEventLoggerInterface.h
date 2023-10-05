@@ -6,28 +6,30 @@
 
 namespace Barta {
 	template<typename EventType, typename ... OtherTypes>
-	class EventMatcher:public EventMatcher<const EventType>, EventMatcher<const OtherTypes...> {
+	class EventMatcher:public EventMatcher<EventType>, EventMatcher<OtherTypes...> {
 		public:
-		using EventMatcher<const EventType>::logEvent;
-		using EventMatcher<const OtherTypes...>::logEvent;
-		using EventMatcher<const EventType>::logSubscriber;
-		using EventMatcher<const OtherTypes...>::logSubscriber;
+        EventMatcher() : EventMatcher<EventType>(), EventMatcher<OtherTypes...>() {}
+		using EventMatcher<EventType>::logEvent;
+		using EventMatcher<OtherTypes...>::logEvent;
+		using EventMatcher<EventType>::logSubscriber;
+		using EventMatcher<OtherTypes...>::logSubscriber;
 
 		void runSubscribers() {
-			EventMatcher<const EventType>::runSubscribers();
-			EventMatcher<const OtherTypes...>::runSubscribers();
+			EventMatcher<EventType>::runSubscribers();
+			EventMatcher<OtherTypes...>::runSubscribers();
 		}
 	};
 
 	template<typename EventType>
-	class EventMatcher<const EventType> {
+	class EventMatcher<EventType> {
 		public:
+        EventMatcher() : events(std::list<std::unique_ptr<EventType>>()), subscribers(std::list<std::unique_ptr<EventSubscriber<EventType>>>()) {}
 
-		void logEvent(std::unique_ptr<const EventType> event) noexcept {
+		void logEvent(std::unique_ptr<EventType> event) noexcept {
 			this->events.push_back(std::move(event));
 		}
 
-		void logSubscriber(std::unique_ptr<EventSubscriber<const EventType>> subscriber) noexcept {
+		void logSubscriber(std::unique_ptr<EventSubscriber<EventType>> subscriber) noexcept {
 			this->subscribers.push_back(std::move(subscriber));
 		}
 
@@ -69,16 +71,16 @@ namespace Barta {
 
 		private:
 
-		std::list<std::unique_ptr<const EventType>> events;
-		std::list<std::unique_ptr<EventSubscriber<const EventType>>> subscribers;
+		std::list<std::unique_ptr<EventType>> events;
+		std::list<std::unique_ptr<EventSubscriber<EventType>>> subscribers;
 	};
 
 	class CollisionEvent;
 	class DynamicsChangeEvent;
 
 	typedef EventMatcher<
-		const LeftClickEvent,
-		const CollisionEvent,
-		const DynamicsChangeEvent
+		LeftClickEvent,
+		CollisionEvent,
+		DynamicsChangeEvent
 	> BartaEventLoggerInterface;
 }

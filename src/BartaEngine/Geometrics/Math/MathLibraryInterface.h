@@ -6,6 +6,7 @@ namespace Barta{
 
 	class MathLibraryInterface{
 	public:
+        virtual ~MathLibraryInterface() noexcept = default;  
 		/*
 			Ax^2 + Bx + C = 0
 		*/

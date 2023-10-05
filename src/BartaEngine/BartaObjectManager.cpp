@@ -1,8 +1,14 @@
 #include "pch.h"
 #include "BartaObjectManager.h"
 
-Barta::BartaObjectManager::~BartaObjectManager(){
-	auto i = this->objectList.begin();
+Barta::BartaObjectManager::BartaObjectManager() noexcept
+:   objectList({}),
+    collidableList({}),
+    dynamicsList({})
+{}
+
+Barta::BartaObjectManager::~BartaObjectManager() {
+    auto i = this->objectList.begin();
 	while( i != this->objectList.end() ){
 		auto objectPtr = ( *i );
 		delete objectPtr;

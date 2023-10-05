@@ -31,5 +31,5 @@ Barta::CollisionTestExecutor::ResultsList Barta::CollisionTestExecutor::executeT
 		i++;
 	}
 
-	return std::move(collisionResults);
+	return collisionResults;
 }

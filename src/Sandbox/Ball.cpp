@@ -4,17 +4,12 @@
 
 
 Ball::Ball( Barta::Vector2f initialPosition, Barta::DynamicsDTO initialDynamics ) :
-    transformable( BartaGraph::createNewTransformableInstance() ),
-    ballColor( Barta::Resource::RED_BALL ),
+    transformable( std::move(BartaGraph::createNewTransformableInstance()) ),
     hitbox( new Barta::CircleHitbox( Barta::Circle( 40.f, Barta::Vector2f( 40.f, 40.f ) ) ) ),
-    dynamicsDTO( std::move( initialDynamics ))
+    dynamicsDTO( std::move( initialDynamics )),
+    ballColor( Barta::Resource::RED_BALL )
 {
     this->transformable->setPosition( initialPosition );
-}
-
-Ball::~Ball(){
-    delete this->transformable;
-    delete this->hitbox;
 }
 
 bool Ball::isToBeDeleted() const{
@@ -25,11 +20,11 @@ const Barta::TransformableInterface& Ball::getTransformable() const{
     return *this->transformable;
 }
 
-const Barta::Resource Ball::getResourceId() const noexcept{
+Barta::Resource Ball::getResourceId() const noexcept{
     return this->ballColor;
 }
 
-const Barta::Resource Ball::getBallCollor() const{
+Barta::Resource Ball::getBallCollor() const{
     return this->ballColor;
 }
 

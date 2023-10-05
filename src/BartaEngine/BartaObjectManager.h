@@ -5,7 +5,7 @@
 namespace Barta{
 	class BartaObjectManager : public ObjectManagerInterface{
 	public:
-		BartaObjectManager() = default;
+		BartaObjectManager() noexcept;
 
 		virtual ~BartaObjectManager();
 

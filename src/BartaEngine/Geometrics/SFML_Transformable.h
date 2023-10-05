@@ -8,7 +8,7 @@ namespace Barta{
 	public:
 		SFML_Transformable();
 		SFML_Transformable( const SFML_Transformable& second );
-		virtual ~SFML_Transformable();
+		virtual ~SFML_Transformable() noexcept = default;
 
 		Vector2f getPosition() const override;
 
@@ -21,7 +21,7 @@ namespace Barta{
 		virtual AABB getTransformedAABB( const AABB& aabb ) const override;
 
 	private:
-		sf::Transformable* transformable;
+		std::unique_ptr<sf::Transformable> transformable;
 	};
 }
 

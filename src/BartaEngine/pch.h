@@ -10,7 +10,10 @@
 #include <vector>
 
 // SFML
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 #include <SFML/Graphics.hpp>
+#pragma GCC diagnostic pop
 
 // other headers
 #include <math.h>

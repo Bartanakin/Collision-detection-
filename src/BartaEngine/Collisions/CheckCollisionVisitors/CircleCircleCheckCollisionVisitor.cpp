@@ -13,17 +13,20 @@ Barta::CircleCircleCheckCollisionVisitor::CircleCircleCheckCollisionVisitor(
 
 Barta::CircleCircleCheckCollisionVisitor::~CircleCircleCheckCollisionVisitor() {}
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 Barta::CollisionTestResult Barta::CircleCircleCheckCollisionVisitor::checkStaticCollision(
 	const MathLibraryInterface& mathLib,
 	CollisionTestResultBuilder& collisionTestResultBuilder
 ) const {
 	return collisionTestResultBuilder
 		.setCollisionDetected(
-			pow(circle1.getRadius() + circle2.getRadius(), 2) >= this->circle1.getCenter().squareOfDistance(this->circle2.getCenter())
+			static_cast<float>(pow(circle1.getRadius() + circle2.getRadius(), 2)) >= this->circle1.getCenter().squareOfDistance(this->circle2.getCenter())
 		)
 		->setStaticCollision(true)
 		->build();
 }
+#pragma GCC diagnostic pop
 
 Barta::CollisionTestResult Barta::CircleCircleCheckCollisionVisitor::checkDynamicCollision(
 	const MathLibraryInterface& mathLib,
@@ -35,12 +38,10 @@ Barta::CollisionTestResult Barta::CircleCircleCheckCollisionVisitor::checkDynami
 		return staticResult;
 	}
 
-	static int counter = 0; // DEBUG
 	collisionTestResultBuilder.reset();
 	auto s = circle1.getCenter() - circle2.getCenter();
 	auto v = dynamicsDifference.velocity;
 	auto r = circle1.getRadius() + circle2.getRadius();
-	auto dist = sqrt(circle1.getCenter().squareOfDistance(circle2.getCenter()));
 
 	auto eq = mathLib.createQuadraticEquation(v * v, v * s * 2.f, s * s - r * r);
 	eq->solve();
@@ -52,10 +53,6 @@ Barta::CollisionTestResult Barta::CircleCircleCheckCollisionVisitor::checkDynami
 	}
 
 	auto solution = eq->getSolutions()[0];
-	if (0.f <= solution && solution <= delta_time) { // DEBUG
-		counter++;
-	}
-
 	collisionTestResultBuilder.setNormVector(this->getNormalVector());
 	collisionTestResultBuilder.setCollisionDetected(0.f <= solution && solution <= delta_time);
 	collisionTestResultBuilder.setTimePassed(solution);

@@ -8,11 +8,13 @@
 class BartaGraph :public Barta::Application{
 	void checkLogic() override;
 public:
-	BartaGraph( Barta::TimerInterface* const );
+	BartaGraph( std::unique_ptr<Barta::TimerInterface> const );
+    BartaGraph(const BartaGraph&) = delete;
+    BartaGraph(BartaGraph&&) = delete;
+    BartaGraph& operator=(const BartaGraph&) = delete;
+	~BartaGraph() noexcept;
 
-	~BartaGraph();
-
-	static Barta::TransformableInterface* const createNewTransformableInstance();
+	static std::unique_ptr<Barta::TransformableInterface> createNewTransformableInstance();
 
 private:
 	Ball* ball1;

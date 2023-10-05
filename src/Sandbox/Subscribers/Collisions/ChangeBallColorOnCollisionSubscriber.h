@@ -9,7 +9,7 @@ class ChangeBallColorOnCollisionSubscriber: public Barta::CollisionEventSubscrib
 	ChangeBallColorOnCollisionSubscriber(Ball& ball1, Ball& ball2) noexcept;
 	virtual ~ChangeBallColorOnCollisionSubscriber() noexcept = default;
 
-	bool handle(const Barta::CollisionEvent& event) override;
+	bool handle(Barta::CollisionEvent& event) override;
 
 	bool isValid() const noexcept override;
 

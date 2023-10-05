@@ -19,6 +19,8 @@ Barta::CircleAABBCheckCollisionVisitor::CircleAABBCheckCollisionVisitor(
 
 Barta::CircleAABBCheckCollisionVisitor::~CircleAABBCheckCollisionVisitor(){}
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 Barta::CollisionTestResult Barta::CircleAABBCheckCollisionVisitor::checkStaticCollision(
 	const MathLibraryInterface& mathLib,
 	CollisionTestResultBuilder& collisionTestResultBuilder
@@ -43,6 +45,7 @@ Barta::CollisionTestResult Barta::CircleAABBCheckCollisionVisitor::checkStaticCo
 
 		return collisionTestResultBuilder.build();
 	}
+#pragma GCC diagnostic pop
 
 	auto cornerCircle = Circle(this->circle.getRadius(), this->matchCornerCenter(regionMask, this->aabb));
 	if (cornerCircle.isWithin(this->circle.getCenter())) {
@@ -134,7 +137,7 @@ Barta::Vector2f Barta::CircleAABBCheckCollisionVisitor::matchCornerCenter(AABB::
 Barta::Vector2f Barta::CircleAABBCheckCollisionVisitor::calculateNormVector() const {
 	std::vector<Vector2f> possibleNormalVectors = {{0.f, -1.f}, {1.f, 0.f}, {0.f, 1.f}, {-1.f, 0.f}};
 	auto vertices = this->expandedAABB.getVertices();
-	for (int i = 0; i < 4; i++) {
+	for (decltype(vertices)::size_type i = 0; i < 4; i++) {
 		auto seg = Segment(
 			this->circle.getCenter(),
 			this->circle.getCenter() + this->dynamicsDifference.velocity

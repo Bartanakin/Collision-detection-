@@ -15,7 +15,7 @@ Barta::CollisionTestExecutorInterface::ResultsList Barta::FilterCollisionsOverti
 ) {
 	auto resultsList = this->decoratedObject->executeTests(collidableList);
 	if (resultsList.empty()) {
-		return std::move(resultsList);
+		return resultsList;
 	}
 
 	float max_time = this->timer.getCurrentDeltaTime();
@@ -43,5 +43,5 @@ Barta::CollisionTestExecutorInterface::ResultsList Barta::FilterCollisionsOverti
 
 	this->timer.setCurrentDeltaTime(max_time);
 
-	return std::move(resultsList);
+	return resultsList;
 }

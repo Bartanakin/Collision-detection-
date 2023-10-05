@@ -1,7 +1,13 @@
 #include "pch.h"
 #include "SimpleResourceContainer.h"
 
-Barta::SimpleResourceContainer::SimpleResourceContainer(){
+Barta::SimpleResourceContainer::SimpleResourceContainer()
+    : texture({}),
+    redBallTextureRect({}),
+    greenBallTextureRect({}),
+    yellowBlockRect({}),
+    giantBlock({}) 
+{
 	this->init();
 }
 

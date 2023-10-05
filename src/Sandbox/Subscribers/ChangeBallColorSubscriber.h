@@ -7,7 +7,7 @@ public:
 	ChangeBallColorSubscriber(Ball& ball);
 	virtual ~ChangeBallColorSubscriber() = default;
 
-	bool handle( const Barta::LeftClickEvent& event ) override;
+	bool handle(Barta::LeftClickEvent& event) override;
 
 	bool isValid() const noexcept override;
 

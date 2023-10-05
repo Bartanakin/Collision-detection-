@@ -7,9 +7,9 @@ namespace Barta {
 	class EventSubscriber {
 		public:
 
-		bool handle(const EventType& event) {}
+		bool handle(EventType& event) { return false; }
 
-		bool isValid() const noexcept {}
+		bool isValid() const noexcept { return false; }
 	};
 
 }

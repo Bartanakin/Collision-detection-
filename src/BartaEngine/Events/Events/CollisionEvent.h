@@ -15,12 +15,13 @@ namespace Barta {
 	{
 		using ExtendedCollisionResult = std::tuple<
 			CollisionTestResult,
-			CollisionAwareInterface const*,
-			CollisionAwareInterface const*
+			CollisionAwareInterface*,
+			CollisionAwareInterface*
 		>;
 		public:
 		CollisionEvent(const ExtendedCollisionResult collisionResuslt, float delta_t) noexcept:
 			collisionResuslt(std::move(collisionResuslt)), delta_t(delta_t) {}
+        virtual ~CollisionEvent() noexcept = default;
 
 		bool compareObjects(CollisionAwareInterface* first, CollisionAwareInterface* second) const noexcept;
 
@@ -28,7 +29,7 @@ namespace Barta {
 			return this->collisionResuslt;
 		}
 
-		inline const float getDelta_t() const noexcept {
+		inline float getDelta_t() const noexcept {
 			return this->delta_t;
 		}
 
@@ -38,14 +39,15 @@ namespace Barta {
 	};
 
 	template<>
-	class EventSubscriber<const CollisionEvent> {
+	class EventSubscriber<CollisionEvent> {
 		public:
+        virtual ~EventSubscriber() noexcept = default;
 
-		virtual bool handle(const CollisionEvent& event) = 0;
+		virtual bool handle(CollisionEvent& event) = 0;
 
 		virtual bool isValid() const noexcept = 0;
 	};
 
-	typedef EventSubscriber<const CollisionEvent> CollisionEventSubscriberInterface;
+	typedef EventSubscriber<CollisionEvent> CollisionEventSubscriberInterface;
 }
 

@@ -8,6 +8,8 @@ namespace Barta{
     public:
         SFML_GraphicsBridge() noexcept;
         SFML_GraphicsBridge( const SFML_GraphicsBridge& ) noexcept = delete;
+        SFML_GraphicsBridge(SFML_GraphicsBridge&&) noexcept = delete;
+        SFML_GraphicsBridge& operator=(const SFML_GraphicsBridge&) noexcept = delete;
         virtual ~SFML_GraphicsBridge();
 
         void createWindow( Vector2f size, std::string title ) override;
@@ -17,7 +19,7 @@ namespace Barta{
         static const sf::Transformable convertTransformable( const TransformableInterface& myTransformable );
     private:
         sf::RenderWindow* sf_window;
-        RecourseMatcherInterface* const resourceMatcher;
+        std::unique_ptr<RecourseMatcherInterface>resourceMatcher;
     };
 }
 

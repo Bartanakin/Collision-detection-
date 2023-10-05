@@ -3,27 +3,22 @@
 #include "../BartaGraph.h"
 
 GiantBlock::GiantBlock(Barta::Vector2f initialPosition) 
-	:transformable(BartaGraph::createNewTransformableInstance()),
+	:transformable(std::move(BartaGraph::createNewTransformableInstance())),
 	hitbox(new Barta::AABB_Hitbox(Barta::AABB(Barta::Vector2f(0.f, 0.f), Barta::Vector2f(500.f, 500.f)))),
 	dynamicsDTO(Barta::DynamicsDTO({0.f, 0.f}))
 {
 	this->transformable->setPosition(initialPosition);
 }
 
-GiantBlock::~GiantBlock() {
-	delete this->transformable;
-	delete this->hitbox;
-}
-
 bool GiantBlock::isToBeDeleted() const {
 	return false;
 }
 
-const Barta::TransformableInterface& GiantBlock::getTransformable() const {
+Barta::TransformableInterface& GiantBlock::getTransformable() const {
 	return *this->transformable;
 }
 
-const Barta::Resource GiantBlock::getResourceId() const noexcept {
+Barta::Resource GiantBlock::getResourceId() const noexcept {
 	return Barta::Resource::GIANT_BLOCK;
 }
 

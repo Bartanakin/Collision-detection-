@@ -16,14 +16,15 @@ namespace Barta{
 	};
 
 	template<>
-	class EventSubscriber<const LeftClickEvent> {
+	class EventSubscriber<LeftClickEvent> {
 		public:
+        virtual ~EventSubscriber() noexcept = default;
 
-		virtual bool handle(const LeftClickEvent& event) = 0;
+		virtual bool handle(LeftClickEvent& event) = 0;
 
 		virtual bool isValid() const noexcept = 0;
 	};
 
-	typedef EventSubscriber<const LeftClickEvent> LeftClickEventSubscriberInterface;
+	typedef EventSubscriber<LeftClickEvent> LeftClickEventSubscriberInterface;
 }
 

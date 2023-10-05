@@ -7,10 +7,9 @@ set(SANDBOX_NAME "BartaSandbox")
 set(UNIT_TEST_NAME "BartaEngineUT")
 
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_C_COMPILER "C:\\msys64\\mingw64\\bin\\gcc.exe")
-set(CMAKE_CXX_COMPILER "C:\\msys64\\mingw64\\bin\\g++.exe")
+set(CMAKE_C_COMPILER "C:/msys64/mingw64/bin/gcc.exe")
+set(CMAKE_CXX_COMPILER "C:/msys64/mingw64/bin/g++.exe")
 set(CMAKE_GENERATOR "Unix Makefiles")
-set(USE_CUDA "OFF" CACHE INTERNAL "" FORCE)
 
 project(
     ${PROJECT_NAME}

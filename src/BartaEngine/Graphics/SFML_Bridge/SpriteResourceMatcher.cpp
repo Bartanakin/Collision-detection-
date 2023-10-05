@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "SpriteResourceMatcher.h"
 
-Barta::SpriteResourceMatcher::SpriteResourceMatcher( ResourceContainerInterface* const resourceContainer )
-: resourceContainer(resourceContainer){}
+Barta::SpriteResourceMatcher::SpriteResourceMatcher( std::unique_ptr<ResourceContainerInterface> resourceContainer )
+:   sf_spriteMap({}),
+    resourceContainer(std::move(resourceContainer)),
+    nullDrawableObject({})
+{}
 
 Barta::SpriteResourceMatcher::~SpriteResourceMatcher(){
-	delete this->resourceContainer;
 	for( auto sprite : this->sf_spriteMap ){
 		delete sprite.second;
 	}

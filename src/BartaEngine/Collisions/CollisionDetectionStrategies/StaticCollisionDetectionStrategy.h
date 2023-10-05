@@ -7,13 +7,13 @@ namespace Barta{
 	class StaticCollisionDetectionStrategy : public CollisionDetectionStrategyInterface{
 
 	public:
-		StaticCollisionDetectionStrategy( MathLibraryInterface* const );
-		virtual ~StaticCollisionDetectionStrategy();
+		StaticCollisionDetectionStrategy(std::unique_ptr<MathLibraryInterface>);
+		virtual ~StaticCollisionDetectionStrategy() noexcept = default;
 
 		virtual CollisionTestResult acceptCheckCollisionVisitor( const CheckCollisionVisitorInterface& checkCollisionVisitor ) const override;
 
 	private:
-		MathLibraryInterface* const mathLibrary;
+		std::unique_ptr<MathLibraryInterface> mathLibrary;
 	};
 }
 

@@ -37,6 +37,8 @@ Barta::CollisionTestResult Barta::AABB_Hitbox::intersectsWithCircle(
 	) );
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 Barta::CollisionTestResult Barta::AABB_Hitbox::intersectsWithAABB(
 	const AABB& secondAABB,
 	const CollisionDetectionStrategyInterface& collisionDetector,
@@ -45,6 +47,7 @@ Barta::CollisionTestResult Barta::AABB_Hitbox::intersectsWithAABB(
 	//throw "AABB and AABB collisions not implemented yet.";
 	return CollisionTestResult(false, 0.f, false, Vector2f(0., 0.));
 }
+#pragma GCC diagnostic pop
 
 const Barta::AABB& Barta::AABB_Hitbox::getAABB() const{
 	return this->aabb;

@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "DynamicsChangeSubscriber.h"
 
-bool Barta::DynamicsChangeSubscriber::handle(const DynamicsChangeEvent& event) {
-    auto ptr = ((DynamicsAwareInterface*) (event.dynamicsAware));
-    ((DynamicsAwareInterface*)(event.dynamicsAware))->setDynamicsDTO(event.newDynamics);
+
+bool Barta::DynamicsChangeSubscriber::handle(DynamicsChangeEvent& event) {
+    event.dynamicsAware->setDynamicsDTO(event.dynamicsAware->getDynamicsDTO() + event.dynamicsDiff);
 
     return true;
 }

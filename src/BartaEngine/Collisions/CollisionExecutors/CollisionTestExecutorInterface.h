@@ -12,8 +12,8 @@ namespace Barta {
 
 		using ExtendedCollisionResult = std::tuple<
 			CollisionTestResult,
-			CollisionAwareInterface const*,
-			CollisionAwareInterface const*
+			CollisionAwareInterface*,
+			CollisionAwareInterface*
 		>;
 		typedef std::list<ExtendedCollisionResult> ResultsList;
 
