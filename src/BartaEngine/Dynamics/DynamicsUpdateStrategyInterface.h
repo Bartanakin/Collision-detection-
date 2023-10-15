@@ -9,6 +9,6 @@ namespace Barta{
 		DynamicsUpdateStrategyInterface() = default;
 		virtual ~DynamicsUpdateStrategyInterface() = default;
 
-		virtual void update(DynamicsAwareInterface::DynamicsAwareList, const float) = 0;
+		virtual void update(DynamicsAwareInterface::DynamicsAwareList&, const float) = 0;
 	};
 }

@@ -1,14 +1,15 @@
 #pragma once
 #include<Application.h>
-#include"Block.h"
+#include"Player.h"
 #include"Objects/GiantBlock.h"
 #include"Ball.h"
 #include"Dynamics/TimerInterface.h"
+#include "ListsDefinitions.h"
 
 class BartaGraph :public Barta::Application{
 	void checkLogic() override;
 public:
-	BartaGraph( std::unique_ptr<Barta::TimerInterface> const );
+	BartaGraph(std::unique_ptr<Barta::TimerInterface> const);
     BartaGraph(const BartaGraph&) = delete;
     BartaGraph(BartaGraph&&) = delete;
     BartaGraph& operator=(const BartaGraph&) = delete;
@@ -21,11 +22,14 @@ private:
 	Ball* ball2;
 	Ball* ball3;
 
-	Block* block;
+	Player* player;
 
 	GiantBlock* upperBound;
 	GiantBlock* leftBound;
 	GiantBlock* bottomBound;
 	GiantBlock* rightBound;
+
+    BallList ballList;
+    BombList bombList;
 };
 

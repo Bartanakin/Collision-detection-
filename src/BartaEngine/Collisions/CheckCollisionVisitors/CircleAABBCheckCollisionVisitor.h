@@ -34,7 +34,7 @@ namespace Barta{
 		const AABB expandedAABB;
 
 		Vector2f matchCornerCenter(AABB::VoronoiRegion regionMask, const AABB& aabb) const;
-		Vector2f calculateNormVector() const;
+		Vector2f calculateNormVector(const float delta_time) const;
 	};
 }
 

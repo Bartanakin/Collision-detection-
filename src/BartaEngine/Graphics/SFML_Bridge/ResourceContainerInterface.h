@@ -1,6 +1,5 @@
 #pragma once
 #include "../../pch.h"
-#include "../Resource.h"
 
 namespace Barta{
 
@@ -10,10 +9,10 @@ namespace Barta{
 		virtual ~ResourceContainerInterface() = default;
 		ResourceContainerInterface( const ResourceContainerInterface& ) = delete;
 
-		virtual bool hasTexture( const Resource resource ) const = 0;
+		virtual bool hasTexture( const int resource ) const = 0;
 
-		virtual const sf::Texture& getTexture( const Resource resource ) const = 0;
+		virtual const sf::Texture& getTexture( const int resource ) const = 0;
 
-		virtual const sf::IntRect getTextureRect( const Resource resource ) const = 0;
+		virtual const sf::IntRect getTextureRect( const int resource ) const = 0;
 	};
 }

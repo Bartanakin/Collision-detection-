@@ -1,6 +1,7 @@
 #include "GiantBlock.h"
 #include "Hitbox/AABB_Hitbox.h"
 #include "../BartaGraph.h"
+#include "../SandboxResource.h"
 
 GiantBlock::GiantBlock(Barta::Vector2f initialPosition) 
 	:transformable(std::move(BartaGraph::createNewTransformableInstance())),
@@ -18,8 +19,8 @@ Barta::TransformableInterface& GiantBlock::getTransformable() const {
 	return *this->transformable;
 }
 
-Barta::Resource GiantBlock::getResourceId() const noexcept {
-	return Barta::Resource::GIANT_BLOCK;
+int GiantBlock::getResourceId() const noexcept {
+	return static_cast<int>(SandboxResource::GIANT_BLOCK);
 }
 
 std::unique_ptr<const Barta::HitboxInterface> GiantBlock::getHitbox() const {

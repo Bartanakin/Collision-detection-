@@ -19,11 +19,16 @@ Barta::CollisionTestResult Barta::CircleCircleCheckCollisionVisitor::checkStatic
 	const MathLibraryInterface& mathLib,
 	CollisionTestResultBuilder& collisionTestResultBuilder
 ) const {
+    std::stringstream ss;
+    ss << "circle1: " << this->circle1 << " circle2: " << this->circle2 << " velocity: " << this->dynamicsDifference.velocity;
+
 	return collisionTestResultBuilder
 		.setCollisionDetected(
 			static_cast<float>(pow(circle1.getRadius() + circle2.getRadius(), 2)) >= this->circle1.getCenter().squareOfDistance(this->circle2.getCenter())
 		)
 		->setStaticCollision(true)
+        ->setDebugInfo("Circle - Circle static")
+        ->setObjectsDebugInfo(ss.str())
 		->build();
 }
 #pragma GCC diagnostic pop
@@ -40,24 +45,27 @@ Barta::CollisionTestResult Barta::CircleCircleCheckCollisionVisitor::checkDynami
 
 	collisionTestResultBuilder.reset();
 	auto s = circle1.getCenter() - circle2.getCenter();
-	auto v = dynamicsDifference.velocity;
+	auto v = dynamicsDifference.velocity + 0.5f * dynamicsDifference.acceleration * delta_time;
 	auto r = circle1.getRadius() + circle2.getRadius();
 
 	auto eq = mathLib.createQuadraticEquation(v * v, v * s * 2.f, s * s - r * r);
 	eq->solve();
 
 	if (eq->getState() != EquationInterface::State::FINITE_NO_SOLTIONS) {
-		collisionTestResultBuilder.setCollisionDetected(false);
-
-		return collisionTestResultBuilder.build();;
+		return collisionTestResultBuilder
+            .setCollisionDetected(false)
+            ->setDebugInfo("Circle - Circle dynamic, moving parallelly")
+            ->build();
 	}
 
 	auto solution = eq->getSolutions()[0];
-	collisionTestResultBuilder.setNormVector(this->getNormalVector());
-	collisionTestResultBuilder.setCollisionDetected(0.f <= solution && solution <= delta_time);
-	collisionTestResultBuilder.setTimePassed(solution);
 
-	return collisionTestResultBuilder.build();
+	return collisionTestResultBuilder
+        .setNormVector(this->getNormalVector())
+	    ->setCollisionDetected(0.f <= solution && solution <= delta_time)
+        ->setDebugInfo("Circle - Circle dynamic")
+	    ->setTimePassed(solution)
+        ->build();
 }
 
 Barta::Vector2f Barta::CircleCircleCheckCollisionVisitor::getNormalVector() const {

@@ -17,5 +17,9 @@ namespace Barta{
 		const float radius;
 		const Vector2f center;
 	};
+
+	inline std::ostream& operator << (std::ostream& stream, const Circle& circle) noexcept {
+		return stream << "(" << circle.getCenter() << ", " << circle.getRadius() << ")";
+	}
 }
 

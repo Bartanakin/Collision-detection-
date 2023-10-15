@@ -8,19 +8,25 @@ namespace Barta{
 		inline DynamicsDTO(
             Vector2f velocity,
             bool hasInfiniteMass = true,
-            float mass = 1.f,
-            bool hasGravityEnabled = false
+            float mass = 0.f,
+            Vector2f acceleration = {},
+            float rotationVelocity = 0.f,
+            Vector2f massCenter = {}
         ) :
-			velocity( std::move( velocity ) ),
+			velocity(velocity),
 			hasInfiniteMass(hasInfiniteMass),
 			mass(mass),
-            hasGravityEnabled(hasGravityEnabled) {}
+            acceleration(acceleration),
+            rotationVelocity(rotationVelocity),
+            massCenter(massCenter) {}
 
 		inline DynamicsDTO& operator=( const DynamicsDTO& second ){
 			this->velocity = second.velocity;
 			this->hasInfiniteMass = second.hasInfiniteMass;
 			this->mass = second.mass;
-			this->hasGravityEnabled = second.hasGravityEnabled;
+			this->acceleration = second.acceleration;
+            this->rotationVelocity = second.rotationVelocity;
+            this->massCenter = second.massCenter;
 
 			return *this;
 		}
@@ -29,20 +35,49 @@ namespace Barta{
 			velocity( second.velocity ),
 			hasInfiniteMass(second.hasInfiniteMass),
 		    mass(second.mass),
-		    hasGravityEnabled(second.hasGravityEnabled) {}
+		    acceleration(second.acceleration),
+            rotationVelocity(second.rotationVelocity),
+            massCenter(second.massCenter) {}
 
 		inline DynamicsDTO operator+( const DynamicsDTO& second ) const {
-			return DynamicsDTO(this->velocity + second.velocity, false);
+			return DynamicsDTO(
+                this->velocity + second.velocity,
+                false,
+                this->mass + second.mass,
+                this->acceleration + second.acceleration,
+                this->rotationVelocity + second.rotationVelocity,
+                this->massCenter + second.massCenter // TODO
+            );
 		}
 
 		inline DynamicsDTO operator-( const DynamicsDTO& second ) const {
-			return DynamicsDTO(this->velocity - second.velocity, false);
+			return DynamicsDTO(
+                this->velocity - second.velocity,
+                false,
+                this->mass - second.mass,
+                this->acceleration - second.acceleration,
+                this->rotationVelocity - second.rotationVelocity,
+                this->massCenter - this->massCenter // TODO
+            );
+		}
+
+		inline DynamicsDTO operator-() const {
+			return DynamicsDTO(
+                -this->velocity,
+                this->hasInfiniteMass,
+                -this->mass,
+                -this->acceleration,
+                this->rotationVelocity,
+                -this->massCenter // TODO
+            );
 		}
 
 		Vector2f velocity;
 		bool hasInfiniteMass;
 		float mass;
-        bool hasGravityEnabled;
+        Vector2f acceleration;
+        float rotationVelocity;
+        Vector2f massCenter;
 	};
 }
 

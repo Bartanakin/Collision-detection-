@@ -25,12 +25,18 @@ Barta::CollisionTestResult Barta::CircleAABBCheckCollisionVisitor::checkStaticCo
 	const MathLibraryInterface& mathLib,
 	CollisionTestResultBuilder& collisionTestResultBuilder
 ) const {
+    std::stringstream ss;
+    ss << "circle " << this->circle << " aabb: " << this->aabb << " velocity: " << this->dynamicsDifference.velocity;
+
 	collisionTestResultBuilder
 		.setStaticCollision(true)
 		->setCollisionDetected(false)
+        ->setObjectsDebugInfo(ss.str())
 		->setTimePassed(0.f);
 	if (!this->expandedAABB.isWithin(this->circle.getCenter())) {
-		return collisionTestResultBuilder.build();
+		 return collisionTestResultBuilder
+            .setDebugInfo("Circle - AABB static, center not in expanded")
+            ->build();
 	}
 
 	auto regionMask = this->aabb.findVoronoiRegionType(this->circle.getCenter());
@@ -40,22 +46,27 @@ Barta::CollisionTestResult Barta::CircleAABBCheckCollisionVisitor::checkStaticCo
 		regionMask == AABB::VoronoiRegion::BOTTOM ||
 		regionMask == AABB::VoronoiRegion::LEFT ||
 		regionMask == AABB::VoronoiRegion::INSIDE
-		) {
+	) {
 		collisionTestResultBuilder.setCollisionDetected(true);
 
-		return collisionTestResultBuilder.build();
+		return collisionTestResultBuilder
+            .setDebugInfo("Circle - AABB static, in expanded, in base")
+            ->build();
 	}
-#pragma GCC diagnostic pop
 
 	auto cornerCircle = Circle(this->circle.getRadius(), this->matchCornerCenter(regionMask, this->aabb));
 	if (cornerCircle.isWithin(this->circle.getCenter())) {
-		collisionTestResultBuilder.setCollisionDetected(true);
-
-		return collisionTestResultBuilder.build();
+		return collisionTestResultBuilder
+            .setCollisionDetected(true)
+            ->setDebugInfo("Circle - AABB static, in expanded, NOT in base, in corners")
+            ->build();
 	}
 
-	return collisionTestResultBuilder.build();
+	return collisionTestResultBuilder
+        .setDebugInfo("Circle - AABB static, in expanded, NOT in base, NOT in corners")
+        ->build();
 }
+#pragma GCC diagnostic pop
 
 Barta::CollisionTestResult Barta::CircleAABBCheckCollisionVisitor::checkDynamicCollision(
 	const MathLibraryInterface& mathLib,
@@ -67,13 +78,15 @@ Barta::CollisionTestResult Barta::CircleAABBCheckCollisionVisitor::checkDynamicC
 		return staticResult;
 	}
 
-	collisionTestResultBuilder.setStaticCollision(false);
+	collisionTestResultBuilder.setStaticCollision(false)->setTimePassed(delta_time);
 	Vector2f A = this->circle.getCenter();
-	Vector2f B = A + (this->dynamicsDifference.velocity * delta_time);
+	Vector2f B = A + ((this->dynamicsDifference.velocity + 0.5f * this->dynamicsDifference.acceleration * delta_time) * delta_time);
 	Segment L = Segment(A, B);
 	auto tContainer = Intersections::segmentAndAABB(L, this->expandedAABB);
 	if (!this->expandedAABB.isWithin(circle.getCenter()) && tContainer.empty()) {
-		return collisionTestResultBuilder.build();
+		 return collisionTestResultBuilder
+            .setDebugInfo("Circle - AABB dynamic, NOT in expanded")
+            ->build();
 	}
 
 	Vector2f P;
@@ -86,7 +99,7 @@ Barta::CollisionTestResult Barta::CircleAABBCheckCollisionVisitor::checkDynamicC
 	}
 
 	auto regionMask = this->aabb.findVoronoiRegionType(P);
-	auto normVector = this->calculateNormVector();
+	auto normVector = this->calculateNormVector(delta_time);
 	if (normVector == Vector2f()) {
 		throw "Incorrect normal vector found";
 	}
@@ -101,6 +114,7 @@ Barta::CollisionTestResult Barta::CircleAABBCheckCollisionVisitor::checkDynamicC
 	) {
 		collisionTestResultBuilder
 			.setTimePassed(t * delta_time)
+            ->setDebugInfo("Circle - AABB dynamic, in expanded, in base")
 			->setCollisionDetected(true);
 
 		return collisionTestResultBuilder.build();
@@ -109,14 +123,16 @@ Barta::CollisionTestResult Barta::CircleAABBCheckCollisionVisitor::checkDynamicC
 	auto cornerCircle = Circle(this->circle.getRadius(), this->matchCornerCenter(regionMask, this->aabb));
 	auto circleIntersections = Intersections::segmentAndCircle(L, cornerCircle);
 	if (circleIntersections.empty()) {
-		return collisionTestResultBuilder.build();
+		return collisionTestResultBuilder
+            .setDebugInfo("Circle - AABB dynamic, in expanded, NOT in base, NOT in corners")
+            ->build();
 	}
 
-	collisionTestResultBuilder
+	return collisionTestResultBuilder
 		.setTimePassed(circleIntersections[0] * delta_time)
-		->setCollisionDetected(true);
-
-	return collisionTestResultBuilder.build();
+        ->setDebugInfo("Circle - AABB dynamic, in expanded, NOT in base, in corners")
+		->setCollisionDetected(true)
+        ->build();
 }
 
 Barta::Vector2f Barta::CircleAABBCheckCollisionVisitor::matchCornerCenter(AABB::VoronoiRegion regionMask, const AABB& aabb) const {
@@ -134,13 +150,13 @@ Barta::Vector2f Barta::CircleAABBCheckCollisionVisitor::matchCornerCenter(AABB::
 	}
 }
 
-Barta::Vector2f Barta::CircleAABBCheckCollisionVisitor::calculateNormVector() const {
+Barta::Vector2f Barta::CircleAABBCheckCollisionVisitor::calculateNormVector(const float delta_time) const {
 	std::vector<Vector2f> possibleNormalVectors = {{0.f, -1.f}, {1.f, 0.f}, {0.f, 1.f}, {-1.f, 0.f}};
 	auto vertices = this->expandedAABB.getVertices();
 	for (decltype(vertices)::size_type i = 0; i < 4; i++) {
 		auto seg = Segment(
 			this->circle.getCenter(),
-			this->circle.getCenter() + this->dynamicsDifference.velocity
+			this->circle.getCenter() + this->dynamicsDifference.velocity + 0.5f * this->dynamicsDifference.acceleration * delta_time
 		);
 		if (seg.calculateRelationToPoint(vertices[i]) == Segment::Relation::RIGHT) {
 			if (seg.calculateRelationToPoint(vertices[(i + 1) % 4]) == Segment::Relation::LEFT) {

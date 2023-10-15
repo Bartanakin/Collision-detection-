@@ -18,6 +18,10 @@ namespace Barta{
 		virtual AABB getTransformedAABB( const AABB& aabb ) const = 0;
 
 		virtual void move( Vector2f shift ) = 0;
+
+        virtual float getRotaion() const = 0;
+
+        virtual void rotate(float, Vector2f) = 0;
 	};
 }
 

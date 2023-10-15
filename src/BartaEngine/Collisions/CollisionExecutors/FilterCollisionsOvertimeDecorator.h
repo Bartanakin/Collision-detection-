@@ -18,6 +18,7 @@ namespace Barta {
 
 		constexpr const static float collisionTestError = 0.0001f;
 		TimerInterface& timer;
+        ExtendedCollisionResult lastCollisionResult;
 	};
 
 }

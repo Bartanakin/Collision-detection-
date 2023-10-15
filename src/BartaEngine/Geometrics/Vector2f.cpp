@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Vector2f.h"
 
-Barta::Vector2f::Vector2f( float x, float y ) : x( x ), y( y ){}
-
 Barta::Vector2f::Vector2f( const Vector2f& second ) : x( second.x ), y( second.y ){}
 
 Barta::Vector2f::Vector2f( sf::Vector2f vector ) : x( vector.x ), y( vector.y ){}
@@ -23,7 +21,7 @@ float Barta::Vector2f::operator*( const Vector2f& second ) const{
 }
 
 Barta::Vector2f Barta::Vector2f::operator-( const Vector2f& second ) const{
-	return Vector2f( this->getX() - second.getX(), this->getY() - second.getY() );
+	return Vector2f( this->x - second.x, this->y - second.y );
 }
 
 Barta::Vector2f Barta::Vector2f::operator+( const Vector2f& second ) const{
@@ -48,6 +46,24 @@ Barta::Vector2f Barta::Vector2f::normalised() const {
 	return *this * (1.f / std::sqrt(this->squareOfDistance(Vector2f())));
 }
 
-std::ostream& Barta::operator<<( std::ostream& s, const Vector2f& v ){
-	return s << "(" << v.getX() << "," << v.getY() << ")";
+std::string Barta::Vector2f::toString() const noexcept {
+    std::stringstream ss;
+
+    ss << "(" << this->getX() << "," << this->getY() << ")";
+
+    return ss.str();
+}
+
+Barta::Vector2f Barta::Vector2f::zeroise(Vector2f vector, float edge) noexcept {
+    if (std::abs(vector.x) < edge)
+        vector.x = 0.f;
+
+    if (std::abs(vector.y) < edge)
+        vector.y = 0.f;
+
+    return vector;
+}
+
+std::ostream &Barta::operator<<(std::ostream &s, const Vector2f &v) {
+    return s << v.toString();
 }

@@ -13,7 +13,7 @@ Barta::SpriteResourceMatcher::~SpriteResourceMatcher(){
 	}
 }
 
-void Barta::SpriteResourceMatcher::matchResource( const void* hash, const Resource resource ){
+void Barta::SpriteResourceMatcher::matchResource( const void* hash, const int resource ){
 	if( !this->resourceContainer->hasTexture( resource ) ){
 		return;
 	}
@@ -31,13 +31,14 @@ void Barta::SpriteResourceMatcher::matchResource( const void* hash, const Resour
 	sprite->setTextureRect( this->resourceContainer->getTextureRect( resource ) );
 }
 
-const sf::Drawable& Barta::SpriteResourceMatcher::matchAndTransform( const void* hash, const sf::Transformable& transformable ) const{
-	if( !this->sf_spriteMap.count( hash ) ){
+const sf::Drawable& Barta::SpriteResourceMatcher::matchAndTransform(const void* hash, const sf::Transformable& transformable) const{
+	if( !this->sf_spriteMap.count(hash) ){
 		return this->nullDrawableObject;
 	}
 	
-	auto sprite = this->sf_spriteMap.at( hash );
-	sprite->setPosition( transformable.getPosition() );
+	auto sprite = this->sf_spriteMap.at(hash);
+	sprite->setPosition(transformable.getPosition());
+    sprite->setRotation(transformable.getRotation());
 
 	return *sprite;
 }

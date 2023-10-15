@@ -1,5 +1,6 @@
 #pragma once
 #include"BartaObject.h"
+#include"SandboxResource.h"
 #include "Collisions/CollisionAwareInterface.h"
 
 class Ball : 
@@ -13,11 +14,11 @@ public:
 
 	const Barta::TransformableInterface& getTransformable() const override;
 
-	Barta::Resource getResourceId() const noexcept override;
+	int getResourceId() const noexcept override;
 
-	Barta::Resource getBallCollor() const;
+	SandboxResource getBallCollor() const;
 
-	void setBallCollor( Barta::Resource  resource );
+	void setBallCollor( SandboxResource  resource );
 
 	std::unique_ptr<const Barta::HitboxInterface> getHitbox() const override;
 
@@ -27,11 +28,13 @@ public:
 
 	void setDynamicsDTO( const Barta::DynamicsDTO& ) override;
 
+	inline virtual void rotate(float, Barta::Vector2f) override {}
+
 private:
 	std::unique_ptr<Barta::TransformableInterface> transformable;
 	std::unique_ptr<Barta::HitboxInterface> hitbox;
 	Barta::DynamicsDTO dynamicsDTO;
 
-	Barta::Resource ballColor;
+	SandboxResource ballColor;
 };
 

@@ -6,7 +6,8 @@ Barta::FilterCollisionsOvertimeDecorator::FilterCollisionsOvertimeDecorator(
 	TimerInterface& timer
 ) noexcept:
 	CollisionTestExecutorDecorator(std::move(decoratedObject)),
-	timer(timer)
+	timer(timer),
+    lastCollisionResult({})
 {
 }
 
@@ -19,24 +20,41 @@ Barta::CollisionTestExecutorInterface::ResultsList Barta::FilterCollisionsOverti
 	}
 
 	float max_time = this->timer.getCurrentDeltaTime();
-	for (const auto& result : resultsList) {
-		if (std::get<1>(result)->getDynamicsDTO().hasInfiniteMass
-			&& std::get<2>(result)->getDynamicsDTO().hasInfiniteMass) {
+	auto i = resultsList.cbegin();
+	while (i != resultsList.cend()) {
+		if (i->object1->getDynamicsDTO().hasInfiniteMass
+			&& i->object2->getDynamicsDTO().hasInfiniteMass) {
+            i++;
+
 			continue;
 		}
 
-		if (std::get<0>(result).timePassed < max_time && !std::get<0>(result).staticCollision) {
-			max_time = std::get<0>(result).timePassed;
+        if ((*i) == this->lastCollisionResult) {
+			i = resultsList.erase(i);
+
+            continue;
+        }
+
+		if (
+            i->collisionTestResult.timePassed < max_time
+            && !i->collisionTestResult.staticCollision
+        ) {
+			max_time = i->collisionTestResult.timePassed;
 		}
+
+        i++;
 	}
 
-	auto i = resultsList.begin();
-	while (i != resultsList.end()) {
-		if (std::get<0>(*i).timePassed > max_time) {
+	i = resultsList.cbegin();
+	while (i != resultsList.cend()) {
+		if (i->collisionTestResult.timePassed > max_time) {
 			i = resultsList.erase(i);
 
 			continue;
 		}
+
+        if (!i->collisionTestResult.staticCollision)
+            this->lastCollisionResult = *i;
 
 		i++;
 	}

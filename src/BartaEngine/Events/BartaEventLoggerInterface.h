@@ -1,5 +1,7 @@
 #pragma once
 #include "../pch.h"
+#include "Events/KeyPressedEvent.h"
+#include "Events/KeyReleasedEvent.h"
 #include "Events/LeftClickEvent.h"
 #include "Events/CollisionEvent.h"
 #include "Events/VelocityChangeEvent.h"
@@ -23,10 +25,10 @@ namespace Barta {
 	template<typename EventType>
 	class EventMatcher<EventType> {
 		public:
-        EventMatcher() : events(std::list<std::unique_ptr<EventType>>()), subscribers(std::list<std::unique_ptr<EventSubscriber<EventType>>>()) {}
+        EventMatcher() : events(std::list<EventType>()), subscribers(std::list<std::unique_ptr<EventSubscriber<EventType>>>()) {}
 
-		void logEvent(std::unique_ptr<EventType> event) noexcept {
-			this->events.push_back(std::move(event));
+		void logEvent(EventType&& event) noexcept {
+			this->events.push_back(std::forward<EventType>(event));
 		}
 
 		void logSubscriber(std::unique_ptr<EventSubscriber<EventType>> subscriber) noexcept {
@@ -44,7 +46,7 @@ namespace Barta {
 				auto iEv = this->events.begin();
 				while (iEv != this->events.end()) {
 					bool eventErased = false;
-					if ((*iSub)->handle(**iEv)) {
+					if ((*iSub)->handle(*iEv)) {
 						iEv = this->events.erase(iEv);
 						eventErased = true;
 					}
@@ -71,15 +73,19 @@ namespace Barta {
 
 		private:
 
-		std::list<std::unique_ptr<EventType>> events;
+		std::list<EventType> events;
 		std::list<std::unique_ptr<EventSubscriber<EventType>>> subscribers;
 	};
 
 	class CollisionEvent;
 	class DynamicsChangeEvent;
+	class KeyPressedEvent;
+	class KeyReleasedEvent;
 
 	typedef EventMatcher<
 		LeftClickEvent,
+		KeyPressedEvent,
+		KeyReleasedEvent,
 		CollisionEvent,
 		DynamicsChangeEvent
 	> BartaEventLoggerInterface;

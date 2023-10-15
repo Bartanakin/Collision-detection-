@@ -20,6 +20,10 @@ namespace Barta{
 
 		virtual AABB getTransformedAABB( const AABB& aabb ) const override;
 
+        float getRotaion() const override;
+
+        void rotate(float, Vector2f) override;
+
 	private:
 		std::unique_ptr<sf::Transformable> transformable;
 	};

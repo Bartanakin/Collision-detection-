@@ -33,3 +33,20 @@ Barta::AABB Barta::SFML_Transformable::getTransformedAABB( const AABB& aabb ) co
 		aabb.getWidthHeight()
 	);
 }
+
+float Barta::SFML_Transformable::getRotaion() const {
+    return this->transformable->getRotation();
+}
+
+void Barta::SFML_Transformable::rotate(float rotation, Vector2f axis) {
+    auto transformAxis = sf::Transform();
+    transformAxis.rotate(this->transformable->getRotation());
+    auto rotatedAxis = transformAxis.transformPoint({axis.getX(), axis.getY()});
+
+    this->transformable->rotate(rotation);
+
+    transformAxis = sf::Transform();
+    transformAxis.rotate(rotation);
+    auto originTranslation = transformAxis.transformPoint(rotatedAxis);
+    this->transformable->move(rotatedAxis - originTranslation);
+}

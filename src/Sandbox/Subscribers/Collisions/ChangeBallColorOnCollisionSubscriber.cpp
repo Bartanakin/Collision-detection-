@@ -1,4 +1,5 @@
 #include "ChangeBallColorOnCollisionSubscriber.h"
+#include "../../SandboxResource.h"
 
 ChangeBallColorOnCollisionSubscriber::ChangeBallColorOnCollisionSubscriber(Ball& ball1, Ball& ball2) noexcept :
 	ball1(ball1), ball2(ball2)
@@ -10,8 +11,8 @@ bool ChangeBallColorOnCollisionSubscriber::handle(Barta::CollisionEvent& event) 
 		return false;
 	}
 
-	ball1.setBallCollor(Barta::Resource::GREEN_BALL);
-	ball2.setBallCollor(Barta::Resource::GREEN_BALL);
+	ball2.setBallCollor(SandboxResource::GREEN_BALL);
+	ball1.setBallCollor(SandboxResource::GREEN_BALL);
 
 	return true;
 }

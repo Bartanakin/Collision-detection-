@@ -15,6 +15,8 @@ namespace Barta{
 
 		virtual void move( const Vector2f& shift ) = 0;
 
+		virtual void rotate(float, Vector2f) = 0;
+
 		virtual const DynamicsDTO& getDynamicsDTO() const = 0;
 
 		virtual void setDynamicsDTO( const DynamicsDTO& ) = 0;

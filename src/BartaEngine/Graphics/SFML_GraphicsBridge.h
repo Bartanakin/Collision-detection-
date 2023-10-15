@@ -1,12 +1,13 @@
 #pragma once
 #include "BartaGraphicsBridgeInterface.h"
+#include "SFML_Bridge/ResourceContainerInterface.h"
 #include "SFML_Bridge/ResourceMatcherInterface.h"
 
 namespace Barta{
     class SFML_GraphicsBridge :
         public BartaGraphicsBridgeInterface{
     public:
-        SFML_GraphicsBridge() noexcept;
+        SFML_GraphicsBridge(std::unique_ptr<Barta::ResourceContainerInterface> resourceContainer) noexcept;
         SFML_GraphicsBridge( const SFML_GraphicsBridge& ) noexcept = delete;
         SFML_GraphicsBridge(SFML_GraphicsBridge&&) noexcept = delete;
         SFML_GraphicsBridge& operator=(const SFML_GraphicsBridge&) noexcept = delete;

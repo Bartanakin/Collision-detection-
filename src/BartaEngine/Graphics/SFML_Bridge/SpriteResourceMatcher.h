@@ -10,7 +10,7 @@ namespace Barta{
 		SpriteResourceMatcher( std::unique_ptr<ResourceContainerInterface> resourceContainer );
 		virtual ~SpriteResourceMatcher();
 
-		void matchResource( const void* hash, const Resource resource ) override;
+		void matchResource( const void* hash, const int resource ) override;
 		const sf::Drawable& matchAndTransform( const void* hash, const sf::Transformable& transformable ) const override;
 		void drop( const void* hash ) override;
 	private:

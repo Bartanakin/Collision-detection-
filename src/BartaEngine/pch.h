@@ -2,6 +2,7 @@
 
 // STL
 #include <iostream>
+#include <sstream>
 #include <limits>
 #include <list>
 #include <memory>

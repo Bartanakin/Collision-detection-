@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "AABB_Hitbox.h"
 #include "../Collisions/CheckCollisionVisitors/CircleAABBCheckCollisionVisitor.h"
+#include "../Collisions/CheckCollisionVisitors/AABB_AABBCheckCollisionVisitor.h"
 
 Barta::AABB_Hitbox::AABB_Hitbox( const AABB& aabb ) : 
 	aabb( aabb )
@@ -44,8 +45,12 @@ Barta::CollisionTestResult Barta::AABB_Hitbox::intersectsWithAABB(
 	const CollisionDetectionStrategyInterface& collisionDetector,
 	const DynamicsDTO& dynamicsDifference
 ) const {
-	//throw "AABB and AABB collisions not implemented yet.";
-	return CollisionTestResult(false, 0.f, false, Vector2f(0., 0.));
+	return collisionDetector.acceptCheckCollisionVisitor( AABB_AABBCheckCollisionVisitor(
+        secondAABB,
+        this->getAABB(),
+        dynamicsDifference
+    ) );
+    // return CollisionTestResult();
 }
 #pragma GCC diagnostic pop
 

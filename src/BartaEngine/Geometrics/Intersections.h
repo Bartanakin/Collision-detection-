@@ -12,9 +12,6 @@ namespace Barta {
 			auto eq = QuadraticEquation(d*d, m*d*2.f, m*m - c.getRadius()*c.getRadius());
 			eq.solve();
 			auto sol = eq.getSolutions();
-			for (auto& t : sol) {
-				std::cout << std::setprecision(6) << t << " ";
-			}
 
 			sol.erase(std::remove_if(sol.begin(), sol.end(), [] (float t) {
 				return t < 0.f || 1.f < t;

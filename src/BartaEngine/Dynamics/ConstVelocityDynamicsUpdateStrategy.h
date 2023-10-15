@@ -10,7 +10,7 @@ namespace Barta{
 
 		virtual ~ConstVelocityDynamicsUpdateStrategy() noexcept = default;
 		
-		virtual void update(DynamicsAwareInterface::DynamicsAwareList objectList, const float deltaTime) override;
+		virtual void update(DynamicsAwareInterface::DynamicsAwareList& objectList, const float deltaTime) override;
 
 	};
 }

@@ -7,7 +7,7 @@ Ball::Ball( Barta::Vector2f initialPosition, Barta::DynamicsDTO initialDynamics 
     transformable( std::move(BartaGraph::createNewTransformableInstance()) ),
     hitbox( new Barta::CircleHitbox( Barta::Circle( 40.f, Barta::Vector2f( 40.f, 40.f ) ) ) ),
     dynamicsDTO( std::move( initialDynamics )),
-    ballColor( Barta::Resource::RED_BALL )
+    ballColor(SandboxResource::RED_BALL)
 {
     this->transformable->setPosition( initialPosition );
 }
@@ -20,15 +20,15 @@ const Barta::TransformableInterface& Ball::getTransformable() const{
     return *this->transformable;
 }
 
-Barta::Resource Ball::getResourceId() const noexcept{
+int Ball::getResourceId() const noexcept{
+    return static_cast<int>(this->ballColor);
+}
+
+SandboxResource Ball::getBallCollor() const{
     return this->ballColor;
 }
 
-Barta::Resource Ball::getBallCollor() const{
-    return this->ballColor;
-}
-
-void Ball::setBallCollor( Barta::Resource resource ){
+void Ball::setBallCollor( SandboxResource resource ){
     this->ballColor = resource;
 }
 

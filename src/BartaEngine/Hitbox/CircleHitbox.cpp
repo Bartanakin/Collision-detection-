@@ -33,7 +33,7 @@ namespace Barta{
 		return collisionDetector.acceptCheckCollisionVisitor( CircleAABBCheckCollisionVisitor(
 			this->getCircle(),
 			secondAABB,
-			dynamicsDifference
+			-dynamicsDifference
 		) );
 	}
 

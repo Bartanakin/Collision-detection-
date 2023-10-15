@@ -7,7 +7,9 @@ Barta::CollisionResponseSubscriber::CollisionResponseSubscriber(BartaEventLogger
 }
 
 bool Barta::CollisionResponseSubscriber::handle(CollisionEvent& event) {
-	auto& [testResult, firstObject, secondObject] = event.getTestResult();
+	auto& testResult = event.getTestResult().collisionTestResult;
+    auto firstObject = event.getTestResult().object1;
+    auto secondObject = event.getTestResult().object2;
 	if (testResult.staticCollision) {
 		return true;
 	}
@@ -17,18 +19,20 @@ bool Barta::CollisionResponseSubscriber::handle(CollisionEvent& event) {
 
 	float massInverted = 0.f;
 	if (!firstDynamics.hasInfiniteMass) {
-		massInverted += 1.f / firstDynamics.mass;
+		massInverted += (1.f / firstDynamics.mass);
 	}
 
 	if (!secondDynamics.hasInfiniteMass) {
-		massInverted += 1.f / secondDynamics.mass;
+		massInverted += (1.f / secondDynamics.mass);
 	}
 
 	if (massInverted == 0.f) {
 		return true;
 	}
 
-	auto j = -(1.f + this->COEFFICIENT_OF_ELISTICITY) * ((secondDynamics.velocity - firstDynamics.velocity) * testResult.normVector) / (testResult.normVector * testResult.normVector * massInverted);
+    auto realFirstVelocity = firstDynamics.velocity + testResult.timePassed * firstDynamics.acceleration;
+    auto realSecondVelocity = secondDynamics.velocity + testResult.timePassed * secondDynamics.acceleration;
+	auto j = -(1.f + this->COEFFICIENT_OF_ELISTICITY) * ((realSecondVelocity - realFirstVelocity) * testResult.normVector) / (testResult.normVector * testResult.normVector * massInverted);
 	this->calculateNewVelocity(-j, firstObject, testResult.normVector);
 	this->calculateNewVelocity(j, secondObject, testResult.normVector);
 
@@ -49,8 +53,8 @@ void Barta::CollisionResponseSubscriber::calculateNewVelocity(
 		return;
 	}
 
-	this->eventLogger.logEvent(std::unique_ptr<DynamicsChangeEvent>(new DynamicsChangeEvent(
+	this->eventLogger.logEvent(DynamicsChangeEvent(
 		static_cast<DynamicsAwareInterface*>(dynamicsObject),
-		DynamicsDTO(normVector * (j / oldDynamics.mass), oldDynamics.hasInfiniteMass, oldDynamics.mass)
-	)));
+		DynamicsDTO(normVector * (j / oldDynamics.mass), false, 0.f, {})
+	));
 }

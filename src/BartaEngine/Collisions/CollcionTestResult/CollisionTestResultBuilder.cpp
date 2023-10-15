@@ -5,15 +5,26 @@ Barta::CollisionTestResultBuilder::CollisionTestResultBuilder() noexcept :
 	collisionDetected(false),
 	timePassed(0.f),
 	staticCollision(false),
-	normVector(0., 0.)
+	normVector(0., 0.),
+    debugInfo(""),
+    objectsDebugInfo("")
 {}
 
 Barta::CollisionTestResult Barta::CollisionTestResultBuilder::build() const noexcept {
+    std::stringstream ss;
+    ss << this->debugInfo <<
+        " Objects: " << this->objectsDebugInfo <<
+        " Collision detected: " << this->collisionDetected <<
+        " Time passed: " << this->timePassed <<
+        " Static Collision " << this->staticCollision <<
+        " Norm vector: " << this->normVector;
+
 	return CollisionTestResult(
 		this->collisionDetected,
 		this->timePassed,
 		this->staticCollision,
-		this->normVector
+		this->normVector, 
+        ss.str()
 	);
 }
 
@@ -46,4 +57,16 @@ Barta::CollisionTestResultBuilder* Barta::CollisionTestResultBuilder::setNormVec
 	this->normVector = data;
 
 	return this;
+}
+
+Barta::CollisionTestResultBuilder *Barta::CollisionTestResultBuilder::setDebugInfo(std::string data) noexcept {
+    this->debugInfo = data;
+
+    return this;
+}
+
+Barta::CollisionTestResultBuilder *Barta::CollisionTestResultBuilder::setObjectsDebugInfo(std::string data) noexcept {
+    this->objectsDebugInfo = data;
+
+    return this;
 }

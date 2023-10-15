@@ -12,7 +12,7 @@ Barta::CollisionTestExecutorInterface::ResultsList Barta::FilterNoCollisionResul
 	auto resultsList = this->decoratedObject->executeTests(collidableList);
 	auto i = resultsList.begin();
 	while (i != resultsList.end()) {
-		if (std::get<0>(*i).collisionDetected) {
+		if (i->collisionTestResult.collisionDetected) {
 			i++;
 
 			continue;
