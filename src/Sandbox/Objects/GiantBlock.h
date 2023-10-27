@@ -13,7 +13,7 @@ class GiantBlock:
 
 	Barta::TransformableInterface& getTransformable() const override;
 
-	int getResourceId() const noexcept override;
+	const Barta::BartaSprite* getResource() noexcept override;
 
 	std::unique_ptr<const Barta::HitboxInterface> getHitbox() const override;
 
@@ -29,5 +29,7 @@ class GiantBlock:
 	std::unique_ptr<Barta::TransformableInterface> transformable;
 	std::unique_ptr<Barta::HitboxInterface> hitbox;
 	Barta::DynamicsDTO dynamicsDTO;
+
+    Barta::BartaSprite resource;
 };
 

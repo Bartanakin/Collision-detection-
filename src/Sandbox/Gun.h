@@ -2,6 +2,8 @@
 #include"BartaObject.h"
 #include "Collisions/CollisionAwareInterface.h"
 
+using namespace std::literals;
+
 class Gun: 
     public Barta::BartaObjectInterface,
     public Barta::DynamicsAwareInterface {
@@ -13,13 +15,15 @@ class Gun:
         COUNTER_CLOCKWISE,
     };
 
+    static const std::chrono::milliseconds reloadTime;
+
 	Gun() noexcept;
 
 	bool isToBeDeleted() const override;
 
 	const Barta::TransformableInterface& getTransformable() const override;
 
-	int getResourceId() const noexcept override;
+	const Barta::BartaSprite* getResource() noexcept override;
 
 	void move(const Barta::Vector2f& shift) override;
 
@@ -41,9 +45,16 @@ class Gun:
 
 	float getRotation() const;
 
+    std::chrono::milliseconds getLeftToReload() const;
+
+    void setLastShotTime(std::chrono::steady_clock::time_point shotTime);
+
 	private:
 	std::unique_ptr<Barta::TransformableInterface> transformable;
     Barta::DynamicsDTO dynamics;
     RotationState rotationState;
+
+    std::chrono::steady_clock::time_point lastShotTime;
+    Barta::BartaSprite resource;
 };
 

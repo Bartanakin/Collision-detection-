@@ -18,7 +18,7 @@ class Bomb:
 
 	const Barta::TransformableInterface& getTransformable() const override;
 
-	int getResourceId() const noexcept override;
+	const Barta::BartaSprite* getResource() noexcept override;
 
 	std::unique_ptr<const Barta::HitboxInterface> getHitbox() const override;
 
@@ -38,5 +38,7 @@ class Bomb:
 
     Barta::DynamicsDTO dynamics;
     bool toDelete;
+
+	Barta::BartaSprite resource;
 };
 

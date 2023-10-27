@@ -17,9 +17,6 @@ void Barta::ConstVelocityDynamicsUpdateStrategy::update(
 		object->rotate(dynamics.rotationVelocity *deltaTime, dynamics.massCenter);
 
         dynamics.velocity = Vector2f::zeroise(dynamics.velocity + dynamics.acceleration * deltaTime, ZEROING_EDGE);
-        // if (dynamics.rotationVelocity != 0.f) {
-        //     std::cout << dynamics.rotationVelocity <<std::endl;
-        // }
 
         object->setDynamicsDTO(std::move(dynamics));
 	}

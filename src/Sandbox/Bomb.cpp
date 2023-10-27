@@ -10,7 +10,8 @@ Bomb::Bomb(
     transformable(std::move(BartaGraph::createNewTransformableInstance())),
     hitbox(new Barta::CircleHitbox(Barta::Circle(10.f, Barta::Vector2f(10.f, 10.f)))),
     dynamics(initDynamics),
-    toDelete(false)
+    toDelete(false),
+    resource(std::move(Barta::BartaSprite(static_cast<int>(SandboxResource::BOMB))))
 {
     this->transformable->setPosition(initPosition);
 }
@@ -23,8 +24,8 @@ const Barta::TransformableInterface &Bomb::getTransformable() const {
     return *this->transformable;
 }
 
-int Bomb::getResourceId() const noexcept {
-	return static_cast<int>(SandboxResource::BOMB);
+const Barta::BartaSprite* Bomb::getResource() noexcept {
+	return &this->resource;
 }
 
 std::unique_ptr<const Barta::HitboxInterface> Bomb::getHitbox() const {

@@ -10,6 +10,10 @@ bool Barta::CollisionResponseSubscriber::handle(CollisionEvent& event) {
 	auto& testResult = event.getTestResult().collisionTestResult;
     auto firstObject = event.getTestResult().object1;
     auto secondObject = event.getTestResult().object2;
+    if (firstObject->isToBeDeleted() || secondObject->isToBeDeleted()) {
+        return true;
+    }
+
 	if (testResult.staticCollision) {
 		return true;
 	}

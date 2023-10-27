@@ -1,7 +1,6 @@
 #pragma once
 #include "../../pch.h"
 #include "../CollisionAwareInterface.h"
-#include "../../Events/BartaEventLoggerInterface.h"
 #include "../CollcionTestResult/ExtendedCollisionResult.h"
 
 namespace Barta {

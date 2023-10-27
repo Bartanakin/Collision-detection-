@@ -23,21 +23,27 @@ void Barta::SFML_GraphicsBridge::createWindow( Vector2f size, std::string title 
 }
 
 void Barta::SFML_GraphicsBridge::drawObjects(const std::list<BartaObjectInterface*>& objects) {
-    
 	this->sf_window->clear();
 
 	for( const auto& object : objects ){
+        if (object->getResource()->getResourceId() == 0) {
+            this->handleCustomeResource(*object);
+
+            continue;
+        }
+
 		auto hash = static_cast<const void*>(object);
 		if( object->isToBeDeleted() ){
 			this->resourceMatcher->drop( hash );
+
 			continue;
 		}
 
-		this->resourceMatcher->matchResource( hash, object->getResourceId() );
-		this->sf_window->draw( 
+		this->resourceMatcher->matchResource(hash, object->getResource()->getResourceId());
+		this->sf_window->draw(
 			this->resourceMatcher->matchAndTransform( 
 				hash,
-				SFML_GraphicsBridge::convertTransformable( object->getTransformable() )
+				SFML_GraphicsBridge::convertTransformable(object->getTransformable())
 			)
 		);
 	}
@@ -94,4 +100,90 @@ const sf::Transformable Barta::SFML_GraphicsBridge::convertTransformable(const T
     newTransformable.setRotation(myTransformable.getRotaion());
 
 	return newTransformable;
+}
+
+void Barta::SFML_GraphicsBridge::handleCustomeResource(
+    BartaObjectInterface &object
+) {
+    std::vector<float>::size_type dataOffset = 0;
+    for (auto type : object.getResource()->getSpriteType()) {
+        auto data = object.getResource()->getData();
+        auto sf_transformable = SFML_GraphicsBridge::convertTransformable(object.getTransformable());
+        auto transform = sf_transformable.getTransform();
+
+        if (type == SpriteType::RECTABGLE_WITH_COLORS) {
+            auto rectangle = sf::VertexArray(sf::PrimitiveType::Triangles, 6);
+            auto leftTopVertex = sf::Vertex(
+                transform.transformPoint(data[dataOffset], data[dataOffset + 1]),
+                sf::Color(
+                    static_cast<sf::Uint8>(data[dataOffset + 6]),
+                    static_cast<sf::Uint8>(data[dataOffset + 7]),
+                    static_cast<sf::Uint8>(data[dataOffset + 8]),
+                    static_cast<sf::Uint8>(data[dataOffset + 9])
+                )
+            );
+            auto rightTopVertes = sf::Vertex(
+                transform.transformPoint(data[dataOffset], data[dataOffset + 1] + data[dataOffset + 4]),
+                sf::Color(
+                    static_cast<sf::Uint8>(data[dataOffset + 10]),
+                    static_cast<sf::Uint8>(data[dataOffset + 11]),
+                    static_cast<sf::Uint8>(data[dataOffset + 12]),
+                    static_cast<sf::Uint8>(data[dataOffset + 13])
+                )
+            );
+            auto rightBottomVertes = sf::Vertex(
+                transform.transformPoint(data[dataOffset] + data[dataOffset + 3], data[dataOffset + 1] + data[dataOffset + 4]),
+                sf::Color(
+                    static_cast<sf::Uint8>(data[dataOffset + 14]),
+                    static_cast<sf::Uint8>(data[dataOffset + 15]),
+                    static_cast<sf::Uint8>(data[dataOffset + 16]),
+                    static_cast<sf::Uint8>(data[dataOffset + 17])
+                )
+            );
+            auto leftBottomVertex = sf::Vertex(
+                transform.transformPoint(data[dataOffset] + data[dataOffset + 3], data[dataOffset + 1]),
+                sf::Color(
+                    static_cast<sf::Uint8>(data[dataOffset + 18]),
+                    static_cast<sf::Uint8>(data[dataOffset + 19]),
+                    static_cast<sf::Uint8>(data[dataOffset + 20]),
+                    static_cast<sf::Uint8>(data[dataOffset + 21])
+                )
+            );
+
+            rectangle[0] = leftTopVertex;
+            rectangle[1] = leftBottomVertex;
+            rectangle[2] = rightBottomVertes;
+            rectangle[3] = rightBottomVertes;
+            rectangle[4] = rightTopVertes;
+            rectangle[5] = leftTopVertex;
+
+            this->sf_window->draw(rectangle);
+
+            dataOffset += 6 + 4*4;
+        }
+
+        if (type == SpriteType::CIRCLE) {
+            auto circleShape = sf::CircleShape(
+                data[dataOffset + 3]
+            );
+            circleShape.setPosition(sf_transformable.getPosition() + sf::Vector2f(
+                data[dataOffset] - data[dataOffset + 3],
+                data[dataOffset + 1] - data[dataOffset + 3]
+            ));
+            circleShape.setRotation(sf_transformable.getRotation());
+            circleShape.setScale(sf_transformable.getScale());
+            circleShape.setFillColor(
+                sf::Color(
+                    static_cast<sf::Uint8>(data[dataOffset + 4]),
+                    static_cast<sf::Uint8>(data[dataOffset + 5]),
+                    static_cast<sf::Uint8>(data[dataOffset + 6]),
+                    static_cast<sf::Uint8>(data[dataOffset + 7])
+                )
+            );
+
+            this->sf_window->draw(circleShape);
+
+            dataOffset += 8;
+        }
+    }
 }

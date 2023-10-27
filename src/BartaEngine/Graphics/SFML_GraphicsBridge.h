@@ -19,6 +19,8 @@ namespace Barta{
 
         static const sf::Transformable convertTransformable( const TransformableInterface& myTransformable );
     private:
+        void handleCustomeResource(BartaObjectInterface& object);
+
         sf::RenderWindow* sf_window;
         std::unique_ptr<RecourseMatcherInterface>resourceMatcher;
     };

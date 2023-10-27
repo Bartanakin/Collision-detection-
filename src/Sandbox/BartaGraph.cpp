@@ -3,7 +3,6 @@
 #include"Geometrics/SFML_Transformable.h"
 #include"Geometrics/Math/BartaMathLibrary.h"
 #include"BartaObjectManager.h"
-#include"Subscribers/Collisions/ChangeBallColorOnCollisionSubscriber.h"
 #include"Dynamics/ConstVelocityDynamicsUpdateStrategy.h"
 #include"Collisions/CollisionDetectionStrategies/StaticCollisionDetectionStrategy.h"
 #include"Collisions/CollisionDetectionStrategies/DynamicCollisionDetectionStrategy.h"
@@ -19,6 +18,7 @@
 #include "Subscribers/DynamicsChangeSubscriberProxy.h"
 #include "Subscribers/GunShotSubscriber.h"
 #include "Subscribers/Collisions/BombCollisionSubscriber.h"
+#include "ReloadMarker.h"
 
 const Barta::Vector2f gravity = {0.f, 250.f};
 
@@ -56,6 +56,7 @@ BartaGraph::BartaGraph(std::unique_ptr<Barta::TimerInterface> timer)
 		)
 		
 	),
+    customEventsLogger(std::make_unique<CustomEventLogger>()),
     ball1(nullptr),
     ball2(nullptr),
     ball3(nullptr),
@@ -69,24 +70,30 @@ BartaGraph::BartaGraph(std::unique_ptr<Barta::TimerInterface> timer)
 {
 	this->ball1 = new Ball(
 		Barta::Vector2f(380.f, 360.f),
-		Barta::DynamicsDTO(Barta::Vector2f(-100.f, -100.f), false, 1.0f, gravity)
+		Barta::DynamicsDTO(Barta::Vector2f(-100.f, -100.f), false, 0.25f, gravity),
+        Ball::BallSize::SMALL
 	);
+    this->ballList.push_back(this->ball1);
 	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(ball1));
 	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(ball1));
 	this->objectManager->addNewObject(ball1);
 
 	this->ball2 = new Ball(
 		Barta::Vector2f(180.f, 160.f),
-		Barta::DynamicsDTO(Barta::Vector2f(150.f, 60.f), false, 1.0f, gravity)
+		Barta::DynamicsDTO(Barta::Vector2f(150.f, 60.f), false, 1.0f, gravity),
+        Ball::BallSize::MEDIUM
 	);
+    this->ballList.push_back(this->ball2);
 	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(ball2));
 	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(ball2));
 	this->objectManager->addNewObject(ball2);
 
 	this->ball3 = new Ball(
 		Barta::Vector2f(120.f, 300.f),
-		Barta::DynamicsDTO(Barta::Vector2f(170.f, -84.f), false, 1.0f, gravity)
+		Barta::DynamicsDTO(Barta::Vector2f(170.f, -84.f), false, 4.0f, gravity),
+        Ball::BallSize::LARGE
 	);
+    this->ballList.push_back(this->ball3);
 	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(ball3));
 	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(ball3));
 	this->objectManager->addNewObject(ball3);
@@ -124,6 +131,9 @@ BartaGraph::BartaGraph(std::unique_ptr<Barta::TimerInterface> timer)
 	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(this->leftBound));
 	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(this->leftBound));
 	this->objectManager->addNewObject(this->leftBound);
+
+	auto reloadMarker = new ReloadMarker(gun);
+	this->objectManager->addNewObject(reloadMarker);
 
 	this->eventLogger->logSubscriber(std::make_unique<CollisionSubscriberProxy>(
         this->player,

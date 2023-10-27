@@ -5,6 +5,7 @@
 #include"Ball.h"
 #include"Dynamics/TimerInterface.h"
 #include "ListsDefinitions.h"
+#include "CustomEvents/CustomEventLogger.h"
 
 class BartaGraph :public Barta::Application{
 	void checkLogic() override;
@@ -18,6 +19,8 @@ public:
 	static std::unique_ptr<Barta::TransformableInterface> createNewTransformableInstance();
 
 private:
+    std::unique_ptr<CustomEventLogger> customEventsLogger;
+
 	Ball* ball1;
 	Ball* ball2;
 	Ball* ball3;

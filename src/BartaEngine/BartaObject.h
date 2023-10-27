@@ -1,5 +1,6 @@
 #pragma once
 #include "Geometrics/TransformableInterface.h"
+#include "Graphics/BartaSprite.h"
 
 namespace Barta{
 
@@ -11,6 +12,6 @@ namespace Barta{
 
 		virtual const TransformableInterface& getTransformable() const = 0;
 
-		virtual int getResourceId() const noexcept = 0;
+		virtual const BartaSprite* getResource() noexcept = 0;
 	};
 }

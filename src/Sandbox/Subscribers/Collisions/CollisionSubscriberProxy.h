@@ -1,6 +1,5 @@
 #pragma once
 #include<Events/Events/CollisionEvent.h>
-#include<Events/BartaEventLoggerInterface.h>
 #include "../../Player.h"
 #include "../../ListsDefinitions.h"
 

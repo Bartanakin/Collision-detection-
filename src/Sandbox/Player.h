@@ -27,7 +27,7 @@ class Player:
 
 	const Barta::TransformableInterface& getTransformable() const override;
 
-	int getResourceId() const noexcept override;
+	const Barta::BartaSprite* getResource() noexcept override;
 
 	std::unique_ptr<const Barta::HitboxInterface> getHitbox() const override;
 
@@ -45,7 +45,7 @@ class Player:
 
 	inline virtual void rotate(float, Barta::Vector2f) override {}
 
-    inline const Gun* getGun() const { return this->gun; }
+    inline Gun* getGun() const { return this->gun; }
 
 	private:
 	std::unique_ptr<Barta::TransformableInterface> transformable;
@@ -54,5 +54,7 @@ class Player:
     Barta::DynamicsDTO dynamics;
     Position position = Position::LOOSE;
     Gun* gun;
+
+    Barta::BartaSprite resource;
 };
 

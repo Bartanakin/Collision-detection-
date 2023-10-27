@@ -23,7 +23,7 @@ bool BombCollisionSubscriber::handle(Barta::CollisionEvent &event) {
     if (ball != nullptr)
         return this->handleBall(event.getTestResult(), ball, bomb);
     
-    throw "Neither ball nor wall found!";
+    return false;
 }
 
 bool BombCollisionSubscriber::isValid() const noexcept {
@@ -35,7 +35,6 @@ bool BombCollisionSubscriber::handleWall(
     GiantBlock *wall,
     Bomb *bomb
 ) const {
-                    std::cout << "XD" << std::endl;
     bomb->markToBeDeleted();
     this->bombList.reduce();
 
@@ -47,5 +46,8 @@ bool BombCollisionSubscriber::handleBall(
     Ball *ball,
     Bomb *bomb
 ) const {
+    bomb->markToBeDeleted();
+    this->bombList.reduce();
+
     return false;
 }

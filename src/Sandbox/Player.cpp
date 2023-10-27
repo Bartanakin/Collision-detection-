@@ -11,7 +11,8 @@ Player::Player(
 	transformable( std::move(BartaGraph::createNewTransformableInstance()) ),
 	hitbox( new Barta::AABB_Hitbox( Barta::AABB( Barta::Vector2f( 0.f, 0.f ), Barta::Vector2f( 40.f, 60.f ) ) ) ),
     dynamics(dynamics),
-    gun(gun)
+    gun(gun),
+    resource(std::move(Barta::BartaSprite(static_cast<int>(SandboxResource::YELLOW_BLOCK))))
 {
 	this->transformable->setPosition(initialPosition);
     this->gun->setPosition(initialPosition + Barta::Vector2f(10.f, 10.f));
@@ -25,8 +26,8 @@ const Barta::TransformableInterface& Player::getTransformable() const{
 	return *this->transformable;
 }
 
-int Player::getResourceId() const noexcept{
-	return static_cast<int>(SandboxResource::YELLOW_BLOCK);
+const Barta::BartaSprite* Player::getResource() noexcept{
+	return &this->resource;
 }
 
 std::unique_ptr<const Barta::HitboxInterface> Player::getHitbox() const{

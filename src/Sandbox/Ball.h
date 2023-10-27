@@ -2,23 +2,32 @@
 #include"BartaObject.h"
 #include"SandboxResource.h"
 #include "Collisions/CollisionAwareInterface.h"
+#include <Graphics/SpriteBuilder/SpriteMerger.h>
 
 class Ball : 
 	public Barta::BartaObjectInterface, 
 	public Barta::CollisionAwareInterface {
 public:
-	Ball( Barta::Vector2f initialPosition, Barta::DynamicsDTO initialDynamics );
+    enum class BallSize {
+        VERY_SMALL = 0,
+        SMALL = 1,
+        MEDIUM = 2,
+        LARGE = 3
+    };
+    const static std::array<float, 4> ballSizes;
+
+	Ball(
+        Barta::Vector2f initialPosition,
+        Barta::DynamicsDTO initialDynamics,
+        BallSize size
+    );
 	~Ball() noexcept = default;
 
 	bool isToBeDeleted() const override;
 
 	const Barta::TransformableInterface& getTransformable() const override;
 
-	int getResourceId() const noexcept override;
-
-	SandboxResource getBallCollor() const;
-
-	void setBallCollor( SandboxResource  resource );
+	const Barta::BartaSprite* getResource() noexcept override;
 
 	std::unique_ptr<const Barta::HitboxInterface> getHitbox() const override;
 
@@ -35,6 +44,6 @@ private:
 	std::unique_ptr<Barta::HitboxInterface> hitbox;
 	Barta::DynamicsDTO dynamicsDTO;
 
-	SandboxResource ballColor;
+	Barta::BartaSprite resource;
 };
 

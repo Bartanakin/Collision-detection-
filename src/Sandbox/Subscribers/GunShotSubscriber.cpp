@@ -20,6 +20,10 @@ bool GunShotSubscriber::handle(Barta::KeyPressedEvent &event) {
         return false;
     }
 
+    if (this->player->getGun()->getLeftToReload() > 0s) {
+        return false;
+    }
+
     auto bomb = new Bomb(
         this->player->getTransformable().getPosition() + Barta::Vector2f(10.f, 10.f),
         {
@@ -32,6 +36,7 @@ bool GunShotSubscriber::handle(Barta::KeyPressedEvent &event) {
             this->gravity
         }
     );
+    this->player->getGun()->setLastShotTime(std::chrono::steady_clock::now());
 
     this->bombList.push_back(bomb);
 	this->objectManager.addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(bomb));

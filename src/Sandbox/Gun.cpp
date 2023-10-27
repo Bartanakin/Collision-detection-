@@ -2,10 +2,13 @@
 #include "BartaGraph.h"
 #include "SandboxResource.h"
 
+constexpr const std::chrono::milliseconds Gun::reloadTime = 3s;
+
 Gun::Gun() noexcept : 
 	transformable(std::move(BartaGraph::createNewTransformableInstance())),
     dynamics({Barta::Vector2f(), false}),
-    rotationState(RotationState::STATIONARY)
+    rotationState(RotationState::STATIONARY),
+    resource(std::move(Barta::BartaSprite(static_cast<int>(SandboxResource::GREEN_ARROW))))
 {
     this->dynamics.massCenter = {10.f, 20.f};
 }
@@ -18,8 +21,8 @@ const Barta::TransformableInterface& Gun::getTransformable() const{
 	return *this->transformable;
 }
 
-int Gun::getResourceId() const noexcept{
-	return static_cast<int>(SandboxResource::GREEN_ARROW);
+const Barta::BartaSprite* Gun::getResource() noexcept{
+	return &this->resource;
 }
 
 void Gun::move(const Barta::Vector2f& shift){
@@ -61,4 +64,14 @@ void Gun::rotate(float angle, Barta::Vector2f axis) {
 
 float Gun::getRotation() const {
     return this->transformable->getRotaion();
+}
+
+std::chrono::milliseconds Gun::getLeftToReload() const {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(
+        Gun::reloadTime - (std::chrono::steady_clock::now() - this->lastShotTime)
+    );
+}
+
+void Gun::setLastShotTime(std::chrono::steady_clock::time_point shotTime) {
+    this->lastShotTime = shotTime;
 }

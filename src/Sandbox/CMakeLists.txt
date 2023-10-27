@@ -2,17 +2,12 @@ set(SANDBOX_INCLUDES "./" "${CMAKE_SOURCE_DIR}/src/BartaEngine")
 
 add_library(${SANDBOX_NAME} STATIC
     "Ball.cpp"
-    "Ball.h"
     "Bomb.cpp"
-    "Bomb.h"
     "Gun.cpp"
-    "Gun.h"
     "BartaGraph.cpp"
-    "BartaGraph.h"
     "Player.cpp"
-    "Player.h"
     "SimpleResourceContainer.cpp"
-    "SimpleResourceContainer.h"
+    "ReloadMarker.cpp"
 )
 
 add_subdirectory(Objects)

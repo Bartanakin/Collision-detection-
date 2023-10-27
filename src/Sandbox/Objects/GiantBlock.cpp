@@ -6,7 +6,8 @@
 GiantBlock::GiantBlock(Barta::Vector2f initialPosition) 
 	:transformable(std::move(BartaGraph::createNewTransformableInstance())),
 	hitbox(new Barta::AABB_Hitbox(Barta::AABB(Barta::Vector2f(0.f, 0.f), Barta::Vector2f(500.f, 500.f)))),
-	dynamicsDTO(Barta::DynamicsDTO({0.f, 0.f}))
+	dynamicsDTO(Barta::DynamicsDTO({0.f, 0.f})),
+    resource(std::move(Barta::BartaSprite(static_cast<int>(SandboxResource::GIANT_BLOCK))))
 {
 	this->transformable->setPosition(initialPosition);
 }
@@ -19,8 +20,8 @@ Barta::TransformableInterface& GiantBlock::getTransformable() const {
 	return *this->transformable;
 }
 
-int GiantBlock::getResourceId() const noexcept {
-	return static_cast<int>(SandboxResource::GIANT_BLOCK);
+const Barta::BartaSprite* GiantBlock::getResource() noexcept {
+	return &this->resource;
 }
 
 std::unique_ptr<const Barta::HitboxInterface> GiantBlock::getHitbox() const {
