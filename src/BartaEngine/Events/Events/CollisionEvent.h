@@ -10,9 +10,6 @@
 namespace Barta {
 
 	class CollisionEvent 
-		#if DEBUG_COLLISION_EVENT 
-		: public bits_of_q::CopyCounter
-		#endif
 	{
 		public:
 		CollisionEvent(const ExtendedCollisionResult collisionResuslt, float delta_t) noexcept:
@@ -26,7 +23,7 @@ namespace Barta {
 		bool isOneOf(CollisionAwareInterface* needle) const noexcept;
 
         template<typename T, typename List>
-        T* matchFromList(List& list) const {
+        T* matchEitherFromList(List& list) const {
             for (auto ptr : list) {
                 if (this->getTestResult().object1 == static_cast<Barta::CollisionAwareInterface*>(ptr)) {
                     return ptr;
@@ -38,6 +35,53 @@ namespace Barta {
             }
 
             return nullptr;
+        }
+
+        template<typename T1, typename T2, typename List1, typename List2>
+        std::pair<T1*, T2*> matchBothFrom(List1& list1, List2& list2) const {
+            T1* p1 = nullptr;
+            T2* p2 = nullptr;
+            for (auto ptr : list1) {
+                if (this->getTestResult().object1 == static_cast<Barta::CollisionAwareInterface*>(ptr)) {
+                    p1 = ptr;
+
+                    break;
+                }
+            }
+
+            for (auto ptr : list2) {
+                if (this->getTestResult().object2 == static_cast<Barta::CollisionAwareInterface*>(ptr)) {
+                    p2 = ptr;
+
+                    break;
+                }
+            }
+
+            if (p1 != nullptr && p2 != nullptr) {
+                return { p1, p2 };
+            }
+
+            for (auto ptr : list1) {
+                if (this->getTestResult().object2 == static_cast<Barta::CollisionAwareInterface*>(ptr)) {
+                    p1 = ptr;
+
+                    break;
+                }
+            }
+
+            for (auto ptr : list2) {
+                if (this->getTestResult().object1 == static_cast<Barta::CollisionAwareInterface*>(ptr)) {
+                    p2 = ptr;
+
+                    break;
+                }
+            }
+
+            if (p1 != nullptr && p2 != nullptr) {
+                return { p1, p2 };
+            }
+
+            return { nullptr, nullptr };
         }
 
 		inline const ExtendedCollisionResult getTestResult() const noexcept {

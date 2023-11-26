@@ -54,6 +54,10 @@ std::string Barta::Vector2f::toString() const noexcept {
     return ss.str();
 }
 
+float Barta::Vector2f::operator^(const Vector2f second) const noexcept {
+    return this->x * second.y - this->y * second.x;
+}
+
 Barta::Vector2f Barta::Vector2f::zeroise(Vector2f vector, float edge) noexcept {
     if (std::abs(vector.x) < edge)
         vector.x = 0.f;

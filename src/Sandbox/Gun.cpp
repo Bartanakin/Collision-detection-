@@ -8,6 +8,7 @@ Gun::Gun() noexcept :
 	transformable(std::move(BartaGraph::createNewTransformableInstance())),
     dynamics({Barta::Vector2f(), false}),
     rotationState(RotationState::STATIONARY),
+    lastShotTime(std::chrono::steady_clock::now()),
     resource(std::move(Barta::BartaSprite(static_cast<int>(SandboxResource::GREEN_ARROW))))
 {
     this->dynamics.massCenter = {10.f, 20.f};

@@ -29,7 +29,11 @@ namespace Barta{
 
 		virtual void run() final;
 
-		virtual void checkLogic() = 0;
+		virtual void checkLogic() {};
+
+        virtual void preGarbageCollect() {};
+
+        virtual void postDynamicUpdate();
 
 	protected:
 		std::unique_ptr<BartaGraphicsBridgeInterface> graphicsBridge;

@@ -4,6 +4,7 @@
 #include "Geometrics/Math/QuadraticEquation.h"
 #include <iostream>
 
+
 int main() {
 
 	Barta::Application* app = new BartaGraph(std::make_unique<Barta::FrameLimitTimerProxy>(

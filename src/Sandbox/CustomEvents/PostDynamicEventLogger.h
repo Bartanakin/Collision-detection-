@@ -1,9 +1,9 @@
 #pragma once
 
 #include <Events/BartaEventLoggerInterface.h>
-#include "GunShotEvent.h"
+#include "BallCreateEvent.h"
 
 typedef Barta::EventMatcher<
-    GunShotEvent
-> CustomEventLogger;
+    BallCreateEvent
+> PostDynamicEventLogger;
 

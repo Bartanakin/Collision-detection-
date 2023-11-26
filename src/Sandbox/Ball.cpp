@@ -2,27 +2,46 @@
 #include "BartaGraph.h"
 #include "Hitbox/CircleHitbox.h"
 #include <Graphics/SpriteBuilder/CircleSprite.h>
+#include <ranges>
+#include <iterator>
 
-constexpr const std::array<float, 4> Ball::ballSizes = { 10.f, 20.f, 40.f, 80.f };
+const std::function<float(Ball::BallSize)> Ball::ballSize
+    = [] (Ball::BallSize n) constexpr { return 10.f * static_cast<float>(1 << (static_cast<int>(n) - 1)); };
+
+const std::function<float(Ball::BallSize)> Ball::velocity
+    = [] (Ball::BallSize n) constexpr { return 200.f * std::pow<float>(1.25f, static_cast<float>(n)); }; 
+
+const std::function<float(Ball::BallSize)> Ball::mass
+    = [] (Ball::BallSize n) constexpr { return 0.25f * static_cast<float>(n); }; 
+
+constexpr const float Ball::horizontalSpeed = 25.f;
 
 Ball::Ball(
     Barta::Vector2f initialPosition,
-    Barta::DynamicsDTO initialDynamics,
-    BallSize size
+    bool movingLeft,
+    BallSize size,
+    Barta::Vector2f gravity
 ) :
     transformable(std::move(BartaGraph::createNewTransformableInstance())),
     hitbox(new Barta::CircleHitbox(Barta::Circle(
-        Ball::ballSizes[static_cast<size_t>(size)],
-        Barta::Vector2f(Ball::ballSizes[static_cast<size_t>(size)], Ball::ballSizes[static_cast<size_t>(size)])
+        Ball::ballSize(size),
+        Barta::Vector2f(Ball::ballSize(size), Ball::ballSize(size))
     ))),
-    dynamicsDTO(std::move(initialDynamics)),
-    resource({0})
+    dynamicsDTO(
+        {(movingLeft * (-1) + !movingLeft) * Ball::horizontalSpeed, Ball::velocity(size)},
+        false,
+        Ball::mass(size),
+        gravity
+    ),
+    size(size),
+    resource({0}),
+    toBeDeleted(false)
 {
     auto merger = Barta::SpriteMerger();
     merger.addCircleSprite(Barta::CircleSprite(
         Barta::Circle(
-            Ball::ballSizes[static_cast<size_t>(size)],
-            Barta::Vector2f(Ball::ballSizes[static_cast<size_t>(size)], Ball::ballSizes[static_cast<size_t>(size)])
+            Ball::ballSize(size),
+            Barta::Vector2f(Ball::ballSize(size), Ball::ballSize(size))
         ),
         Barta::Color(255, 0, 0, 255)
     ));
@@ -32,7 +51,7 @@ Ball::Ball(
 }
 
 bool Ball::isToBeDeleted() const{
-    return false;
+    return this->toBeDeleted;
 }
 
 const Barta::TransformableInterface& Ball::getTransformable() const{
@@ -55,6 +74,24 @@ const Barta::DynamicsDTO& Ball::getDynamicsDTO() const{
     return this->dynamicsDTO;
 }
 
-void Ball::setDynamicsDTO( const Barta::DynamicsDTO& dynamicsDTO  ){
+void Ball::setDynamicsDTO(const Barta::DynamicsDTO& dynamicsDTO){
     this->dynamicsDTO = dynamicsDTO;
+}
+
+float Ball::getRebounceVelocity() const {
+    return Ball::velocity(this->size);
+}
+
+Ball::BallSize Ball::getSize() const {
+    return this->size;
+}
+
+Ball::BallSize& operator--(Ball::BallSize& ballSize) {
+    if (ballSize == Ball::BallSize::VERY_SMALL) {
+        throw "Cannot decrement BallSize lower that VERY_SMALL!";
+    }
+
+    ballSize = static_cast<Ball::BallSize>(static_cast<int>(ballSize) - 1);
+
+    return ballSize;
 }

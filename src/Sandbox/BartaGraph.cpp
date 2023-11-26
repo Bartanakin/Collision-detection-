@@ -10,30 +10,22 @@
 #include"Collisions/CollisionExecutors/FilterNoCollisionResultsDecorator.h"
 #include"Collisions/CollisionExecutors/FilterCollisionsOvertimeDecorator.h"
 #include "Events/Subscribers/CollisionResponseSubscriber.h"
+#include "Events/Subscribers/StaticCollisionResponseSubscriber.h"
 #include "Events/Subscribers/DynamicsChangeSubscriber.h"
 #include "SimpleResourceContainer.h"
 #include "Subscribers/PlayerMoveSubscriber.h"
 #include "Subscribers/GunMoveSubscriber.h"
-#include "Subscribers/Collisions/CollisionSubscriberProxy.h"
 #include "Subscribers/DynamicsChangeSubscriberProxy.h"
 #include "Subscribers/GunShotSubscriber.h"
 #include "Subscribers/Collisions/BombCollisionSubscriber.h"
 #include "ReloadMarker.h"
+#include "Subscribers/Collisions/BallWallSubscriber.h"
+#include "Subscribers/Collisions/WallBounceSubscriber.h"
+#include "Subscribers/Collisions/BallHitSubscriber.h"
+#include "CustomEvents/BallCreateEvent.h"
+#include "Subscribers/BallCreateSubscriber.h"
 
 const Barta::Vector2f gravity = {0.f, 250.f};
-
-void BartaGraph::checkLogic() {
-    float sum = 0.f;
-    const float groundY = 600.f;
-    // sum += this->ball1->getDynamicsDTO().velocity.squareOfDistance({}) / 2.f;
-    // sum += (groundY - this->ball1->getTransformable().getPosition().getY()) * gravity.getY();
-    // sum += this->ball2->getDynamicsDTO().velocity.squareOfDistance({}) / 2.f;
-    // sum += (groundY - this->ball2->getTransformable().getPosition().getY()) * gravity.getY();
-    // sum += this->ball3->getDynamicsDTO().velocity.squareOfDistance({}) / 2.f;
-    // sum += (groundY - this->ball3->getTransformable().getPosition().getY()) * gravity.getY();
-
-    // std::cout << "E = " << sum << std::endl;
-}
 
 BartaGraph::BartaGraph(std::unique_ptr<Barta::TimerInterface> timer)
 	: Application( 
@@ -56,7 +48,7 @@ BartaGraph::BartaGraph(std::unique_ptr<Barta::TimerInterface> timer)
 		)
 		
 	),
-    customEventsLogger(std::make_unique<CustomEventLogger>()),
+    postDynamicEventLogger(std::make_unique<PostDynamicEventLogger>()),
     ball1(nullptr),
     ball2(nullptr),
     ball3(nullptr),
@@ -65,38 +57,41 @@ BartaGraph::BartaGraph(std::unique_ptr<Barta::TimerInterface> timer)
     leftBound(nullptr),
     bottomBound(nullptr),
     rightBound(nullptr),
-    ballList(BallList()),
-    bombList(BombList())
+    collisionEventsLogger({}),
+    collisionExecutor(
+        {{std::make_unique<Barta::DynamicCollisionDetectionStrategy>(std::make_unique<Barta::BartaMathLibrary>(), *this->timer)}},
+        *this->timer
+    ),
+    objectLists({})
 {
 	this->ball1 = new Ball(
-		Barta::Vector2f(380.f, 360.f),
-		Barta::DynamicsDTO(Barta::Vector2f(-100.f, -100.f), false, 0.25f, gravity),
-        Ball::BallSize::SMALL
+		Barta::Vector2f(200.f, 559.f),
+        false,
+        Ball::BallSize::SMALL,
+        gravity
 	);
-    this->ballList.push_back(this->ball1);
-	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(ball1));
+    this->objectLists.addObject(this->ball1);
 	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(ball1));
 	this->objectManager->addNewObject(ball1);
 
-	this->ball2 = new Ball(
-		Barta::Vector2f(180.f, 160.f),
-		Barta::DynamicsDTO(Barta::Vector2f(150.f, 60.f), false, 1.0f, gravity),
-        Ball::BallSize::MEDIUM
-	);
-    this->ballList.push_back(this->ball2);
-	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(ball2));
-	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(ball2));
-	this->objectManager->addNewObject(ball2);
+	// this->ball2 = new Ball(
+	// 	Barta::Vector2f(180.f, 231.f),
+	// 	Barta::DynamicsDTO(Barta::Vector2f(-20.f, 0.f), false, 1.0f, gravity),
+    //     Ball::BallSize::MEDIUM
+	// );
+    // this->objectLists.addObject(this->ball2);
+	// this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(ball2));
+	// this->objectManager->addNewObject(ball2);
 
-	this->ball3 = new Ball(
-		Barta::Vector2f(120.f, 300.f),
-		Barta::DynamicsDTO(Barta::Vector2f(170.f, -84.f), false, 4.0f, gravity),
-        Ball::BallSize::LARGE
-	);
-    this->ballList.push_back(this->ball3);
-	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(ball3));
-	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(ball3));
-	this->objectManager->addNewObject(ball3);
+	// this->ball3 = new Ball(
+	// 	Barta::Vector2f(120.f, 300.f),
+	// 	Barta::DynamicsDTO(Barta::Vector2f(170.f, -84.f), false, 4.0f, gravity),
+    //     Ball::BallSize::LARGE
+	// );
+    // this->objectLists.addObject(this->ball3);
+	// this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(ball3));
+	// this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(ball3));
+	// this->objectManager->addNewObject(ball3);
 
     Gun* gun = new Gun();
 
@@ -105,7 +100,6 @@ BartaGraph::BartaGraph(std::unique_ptr<Barta::TimerInterface> timer)
 		Barta::DynamicsDTO({}, false, 1.0f),
         gun
 	);
-	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(player));
 	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(player));
 	this->objectManager->addNewObject(player);
 
@@ -113,62 +107,82 @@ BartaGraph::BartaGraph(std::unique_ptr<Barta::TimerInterface> timer)
     this->objectManager->addNewObject(gun);
 
 	this->upperBound = new GiantBlock({100.f, -400.f});
-	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(this->upperBound));
+    this->objectLists.addObject(this->upperBound);
 	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(this->upperBound));
 	this->objectManager->addNewObject(this->upperBound);
 
 	this->rightBound = new GiantBlock({600.f, 100.f});
-	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(this->rightBound));
+    this->objectLists.addObject(this->rightBound);
 	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(this->rightBound));
 	this->objectManager->addNewObject(this->rightBound);
 
 	this->bottomBound = new GiantBlock({100.f, 600.f});
-	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(this->bottomBound));
+    this->objectLists.addObject(this->bottomBound);
 	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(this->bottomBound));
 	this->objectManager->addNewObject(this->bottomBound);
 
 	this->leftBound = new GiantBlock({-400.f, 100.f});
-	this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(this->leftBound));
+    this->objectLists.addObject(this->leftBound);
 	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(this->leftBound));
 	this->objectManager->addNewObject(this->leftBound);
 
 	auto reloadMarker = new ReloadMarker(gun);
 	this->objectManager->addNewObject(reloadMarker);
 
-	this->eventLogger->logSubscriber(std::make_unique<CollisionSubscriberProxy>(
-        this->player,
-        this->bombList,
-        std::make_unique<Barta::CollisionResponseSubscriber>(*this->postDynamicsEventLogger),
-        std::make_unique<BombCollisionSubscriber>(
-            this->bombList,
-            std::vector<GiantBlock*>({
-                this->upperBound,
-                this->rightBound,
-                this->leftBound,
-                this->bottomBound
-            }),
-            this->ballList
-        )
-    ));
 	this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyPressedSubscriberInterface>(new PlayerMoveSubscriber(this->player)));
 	this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyReleasedSubscriberInterface>(new PlayerMoveSubscriber(this->player)));
-	this->eventLogger->logSubscriber(std::unique_ptr<Barta::CollisionEventSubscriberInterface>(new PlayerMoveSubscriber(
-        this->player,
-        this->leftBound,
-        this->rightBound
-    )));
+
     this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyPressedSubscriberInterface>(new GunMoveSubscriber(gun)));
     this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyReleasedSubscriberInterface>(new GunMoveSubscriber(gun)));
-	this->postDynamicsEventLogger->logSubscriber(std::make_unique<DynamicsChangeSubscriberProxy>(
-        this->player,
-        std::make_unique<Barta::DynamicsChangeSubscriber>()
-    ));
+
+	this->postDynamicsEventLogger->logSubscriber(std::make_unique<Barta::DynamicsChangeSubscriber>());
 	this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyPressedSubscriberInterface>(new GunShotSubscriber(
         this->player,
-        this->bombList,
+        this->objectLists.StaticObjectManager<Bomb>::getList(),
         gravity,
         *this->objectManager
     )));
+
+    this->collisionEventsLogger.Barta::EventMatcher<Events::BallWall>::logSubscriber(
+        std::make_unique<Subscribers::WallBounce>(*this->postDynamicsEventLogger)
+    );
+    this->collisionEventsLogger.Barta::EventMatcher<Events::BombWall>::logSubscriber(
+        std::make_unique<BombCollisionSubscriber>()
+    );
+    this->collisionEventsLogger.Barta::EventMatcher<Events::BallBomb>::logSubscriber(
+        std::make_unique<Subscribers::BallHit>(
+            *this->postDynamicEventLogger,
+            gravity
+        )
+    );
+    this->postDynamicEventLogger->logSubscriber(
+        std::unique_ptr<BallCreateSubscriberInterface>(new BallCreateSubscriber(
+            *this->objectManager,
+            this->objectLists.StaticObjectManager<Ball>::getList()
+        ))
+    );
+}
+
+void BartaGraph::checkLogic() {
+    StaticCollisionLogger().executeAndLog<CollisionEventsLogger, ListManager, CollisionCoreExecutor>(
+        this->collisionEventsLogger,
+        this->objectLists,
+        this->collisionExecutor,
+        *this->timer
+    );
+
+    this->collisionEventsLogger.runSubscribers();
+}
+
+void BartaGraph::postDynamicUpdate() {
+    Application::postDynamicUpdate();
+
+    this->postDynamicEventLogger->runSubscribers();
+}
+
+void BartaGraph::preGarbageCollect() {
+    this->objectLists.StaticObjectManager<Bomb>::reduceDeleted();
+    this->objectLists.StaticObjectManager<Ball>::reduceDeleted();
 }
 
 BartaGraph::~BartaGraph() {}

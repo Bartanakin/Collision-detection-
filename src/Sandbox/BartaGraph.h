@@ -5,10 +5,13 @@
 #include"Ball.h"
 #include"Dynamics/TimerInterface.h"
 #include "ListsDefinitions.h"
-#include "CustomEvents/CustomEventLogger.h"
+#include "CustomEvents/PostDynamicEventLogger.h"
+#include <StaticObjectManager.h>
 
 class BartaGraph :public Barta::Application{
 	void checkLogic() override;
+	void preGarbageCollect() override;
+	void postDynamicUpdate() override;
 public:
 	BartaGraph(std::unique_ptr<Barta::TimerInterface> const);
     BartaGraph(const BartaGraph&) = delete;
@@ -19,7 +22,7 @@ public:
 	static std::unique_ptr<Barta::TransformableInterface> createNewTransformableInstance();
 
 private:
-    std::unique_ptr<CustomEventLogger> customEventsLogger;
+    std::unique_ptr<PostDynamicEventLogger> postDynamicEventLogger;
 
 	Ball* ball1;
 	Ball* ball2;
@@ -32,7 +35,8 @@ private:
 	GiantBlock* bottomBound;
 	GiantBlock* rightBound;
 
-    BallList ballList;
-    BombList bombList;
+    CollisionEventsLogger collisionEventsLogger;
+    CollisionCoreExecutor collisionExecutor;
+    ListManager objectLists;
 };
 

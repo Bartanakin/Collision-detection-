@@ -29,23 +29,22 @@ void Barta::Application::run(){
 		this->timer->restart();
 		while( !timer->finished() ){
 			this->checkLogic();
-			for (const auto& testResult : this->collisionTestExecutor->executeTests(this->objectManager->getCollidableList())) {
-				this->eventLogger->logEvent(CollisionEvent(testResult, timer->getCurrentDeltaTime()));
-			}
 
 			this->eventLogger->runSubscribers();
 			this->dynamicsUpdateStrategy->update(this->objectManager->getDynamicsList(), timer->getCurrentDeltaTime());
-			this->postDynamicsEventLogger->runSubscribers();
-			#if DEBUG_COLLISION_EVENT 
-			std::cout << "CollisionEvent: " << CollisionEvent::stats << std::endl;
-			CollisionEvent::reset();
-			#endif
+
+            this->postDynamicUpdate();
 
 			this->timer->forward();
 		}
 
 		this->graphicsBridge->drawObjects( this->objectManager->getList() );
 
+        this->preGarbageCollect();
 		this->objectManager->reduceDeleted();
 	}
+}
+
+void Barta::Application::postDynamicUpdate() {
+    this->postDynamicsEventLogger->runSubscribers();
 }

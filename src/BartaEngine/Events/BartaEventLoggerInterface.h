@@ -8,7 +8,7 @@
 
 namespace Barta {
 	template<typename EventType, typename ... OtherTypes>
-	class EventMatcher:public EventMatcher<EventType>, EventMatcher<OtherTypes...> {
+	class EventMatcher:public EventMatcher<EventType>, public EventMatcher<OtherTypes...> {
 		public:
         EventMatcher() : EventMatcher<EventType>(), EventMatcher<OtherTypes...>() {}
 		using EventMatcher<EventType>::logEvent;

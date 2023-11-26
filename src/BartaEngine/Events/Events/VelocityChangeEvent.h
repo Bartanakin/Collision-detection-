@@ -8,11 +8,7 @@
 
 namespace Barta {
 
-	class DynamicsChangeEvent
-		#if DEBUG_COLLISION_EVENT 
-		: public bits_of_q::CopyCounter
-		#endif
-	{
+	class DynamicsChangeEvent {
 		public:
 		DynamicsChangeEvent(DynamicsAwareInterface* dynamicsAware, DynamicsDTO newDynamics) noexcept:
 			dynamicsAware(dynamicsAware), dynamicsDiff(newDynamics) {

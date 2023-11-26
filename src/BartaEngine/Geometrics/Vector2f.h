@@ -4,10 +4,9 @@
 namespace Barta{
 
 	class Vector2f{
-	private:
+	public:
 		float x;
 		float y;
-	public:
 	    constexpr Vector2f() noexcept = default;
 		inline constexpr Vector2f( float x, float y ) : x( x ), y( y ){}
 		Vector2f( const Vector2f& second );
@@ -35,6 +34,8 @@ namespace Barta{
 		Vector2f normalised() const;
 
         std::string toString() const noexcept;
+
+        float operator^(const Vector2f) const noexcept;
 
         static Vector2f zeroise(Vector2f vector, float edge) noexcept;
 
