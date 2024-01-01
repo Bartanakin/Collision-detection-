@@ -12,10 +12,20 @@ namespace Barta{
         SpriteBuilder* setColor2(Color color) { this->color2 = color; return this; }
         SpriteBuilder* setColor3(Color color) { this->color3 = color; return this; }
         SpriteBuilder* setColor4(Color color) { this->color4 = color; return this; }
+        SpriteBuilder* setAllColors(Color color) {
+            this->color1 = color;
+            this->color2 = color;
+            this->color3 = color;
+            this->color4 = color;
+
+            return this;
+        }
 
         SpriteBuilder* setVertex1(Vector2f vertex) { this->vertex1 = vertex; return this; }
         SpriteBuilder* setSize(Vector2f size) { this->size = size; return this; }
-        
+        SpriteBuilder* setString(std::string string) { this->string = string; return this; }
+        SpriteBuilder* setFontSize(int fontSize) { this->fontSize = fontSize; return this; }
+
         protected:
         Color color1;
         Color color2;
@@ -25,6 +35,8 @@ namespace Barta{
         Vector2f vertex1;
 
         Vector2f size;
+        std::string string;
+        int fontSize;
     };
 }
 

@@ -15,10 +15,6 @@ ReloadMarker::ReloadMarker(
     this->transformable->setPosition({200.f, 630.f});
 }
 
-bool ReloadMarker::isToBeDeleted() const {
-    return false;
-}
-
 const Barta::TransformableInterface &ReloadMarker::getTransformable() const {
     return *this->transformable;
 }
@@ -56,4 +52,7 @@ void ReloadMarker::loadResource() {
     merger.addRectanglewithColors(builder.build());
 
     this->resource = merger.merge(false);
+}
+int ReloadMarker::getZIndex() const {
+    return 10;
 }

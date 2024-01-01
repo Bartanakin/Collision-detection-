@@ -9,10 +9,35 @@ add_library(${SANDBOX_NAME} STATIC
     "ReloadMarker.cpp"
     "SimpleResourceContainer.cpp"
     "Wall.cpp"
+        Stages/StageInterface.h
+        Stages/StageOne.cpp
+        Stages/StageOne.h
+        Scenes/SceneInterface.h
+        Scenes/GameScene.cpp
+        Scenes/GameScene.h
+        CustomEvents/SceneChangeEvent.h
+        Stages/StageTwo.cpp
+        Stages/StageTwo.h
+        Repository/ObjectsRepository.cpp
+        Repository/ObjectsRepository.h
+        Scenes/LobbyScene.cpp
+        Scenes/LobbyScene.h
+        Stages/StageThree.cpp
+        Stages/StageThree.h
+        Stages/StageFour.cpp
+        Stages/StageFour.h
+        Stages/StageFive.cpp
+        Stages/StageFive.h
+        Scenes/SceneChangeDTO.cuh
+        Scenes/InstructionScene.cpp
+        Scenes/InstructionScene.h
+        env.dist.h
 )
 
+add_subdirectory(CustomEvents)
 add_subdirectory(Objects)
 add_subdirectory(Subscribers)
+add_subdirectory(Stages)
 
 target_include_directories(${SANDBOX_NAME} PUBLIC ${SANDBOX_INCLUDES})
 

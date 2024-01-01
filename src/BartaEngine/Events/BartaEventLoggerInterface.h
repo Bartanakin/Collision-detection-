@@ -1,9 +1,9 @@
 #pragma once
 #include "../pch.h"
+#include "Events/Events/MouseMoveEvent.h"
 #include "Events/KeyPressedEvent.h"
 #include "Events/KeyReleasedEvent.h"
 #include "Events/LeftClickEvent.h"
-#include "Events/CollisionEvent.h"
 #include "Events/VelocityChangeEvent.h"
 
 namespace Barta {
@@ -20,7 +20,14 @@ namespace Barta {
 			EventMatcher<EventType>::runSubscribers();
 			EventMatcher<OtherTypes...>::runSubscribers();
 		}
+
+        void removeInvalid() {
+            EventMatcher<EventType>::removeInvalid();
+            EventMatcher<OtherTypes...>::removeInvalid();
+        }
 	};
+
+
 
 	template<typename EventType>
 	class EventMatcher<EventType> {
@@ -35,6 +42,19 @@ namespace Barta {
 			this->subscribers.push_back(std::move(subscriber));
 		}
 
+        void removeInvalid() {
+            auto iSub = this->subscribers.begin();
+            while (iSub != this->subscribers.end()) {
+                if (!(*iSub)->isValid()) {
+                    iSub = this->subscribers.erase(iSub);
+
+                    continue;
+                }
+
+                iSub++;
+            }
+        }
+
 		void runSubscribers() {
 			if (this->events.empty() || this->subscribers.empty()) {
 				return;
@@ -45,22 +65,18 @@ namespace Barta {
 				bool subErased = false;
 				auto iEv = this->events.begin();
 				while (iEv != this->events.end()) {
-					bool eventErased = false;
+                    if (!(*iSub)->isValid()) {
+                        iSub = this->subscribers.erase(iSub);
+                        subErased = true;
+
+                        break;
+                    }
+
 					if ((*iSub)->handle(*iEv)) {
 						iEv = this->events.erase(iEv);
-						eventErased = true;
-					}
-
-					if (!(*iSub)->isValid()) {
-						iSub = this->subscribers.erase(iSub);
-						subErased = true;
-
-						break;
-					}
-
-					if (!eventErased) {
+					} else {
 						iEv++;
-					}
+                    }
 				}
 
 				if (!subErased) {
@@ -77,16 +93,16 @@ namespace Barta {
 		std::list<std::unique_ptr<EventSubscriber<EventType>>> subscribers;
 	};
 
-	class CollisionEvent;
 	class DynamicsChangeEvent;
 	class KeyPressedEvent;
 	class KeyReleasedEvent;
+	class MouseMoveEvent;
 
 	typedef EventMatcher<
 		LeftClickEvent,
 		KeyPressedEvent,
 		KeyReleasedEvent,
-		CollisionEvent,
-		DynamicsChangeEvent
+		DynamicsChangeEvent,
+        MouseMoveEvent
 	> BartaEventLoggerInterface;
 }

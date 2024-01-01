@@ -3,8 +3,10 @@
 
 
 Subscribers::WallBounce::WallBounce(
+    bool* deleteWatch,
     Barta::BartaEventLoggerInterface &eventLogger
-) noexcept :
+) noexcept
+    : Barta::DeletableObject(deleteWatch),
     eventLogger(eventLogger),
     innerSubscriber(Barta::StaticCollisionResponseSubscriberType<Ball, Wall>(eventLogger))
 {}
@@ -25,5 +27,5 @@ bool Subscribers::WallBounce::handle(Events::BallWall &event) {
 }
 
 bool Subscribers::WallBounce::isValid() const noexcept {
-    return true;
+    return !this->isToBeDeleted();
 }

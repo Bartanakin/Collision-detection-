@@ -4,9 +4,11 @@
 #include <ObjectManagerInterface.h>
 
 class BallCreateSubscriber:
-    public BallCreateSubscriberInterface {
+    public BallCreateSubscriberInterface,
+    public Barta::DeletableObject {
 	public:
 	BallCreateSubscriber(
+        bool* deleteWatch,
         Barta::ObjectManagerInterface& objectManager,
         BallList& ballList
     ) noexcept;

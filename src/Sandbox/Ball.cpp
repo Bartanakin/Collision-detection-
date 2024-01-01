@@ -1,15 +1,13 @@
 #include "Ball.h"
 #include "BartaGraph.h"
 #include "Hitbox/CircleHitbox.h"
-#include <Graphics/SpriteBuilder/CircleSprite.h>
-#include <ranges>
 #include <iterator>
 
 const std::function<float(Ball::BallSize)> Ball::ballSize
     = [] (Ball::BallSize n) constexpr { return 10.f * static_cast<float>(1 << (static_cast<int>(n) - 1)); };
 
 const std::function<float(Ball::BallSize)> Ball::velocity
-    = [] (Ball::BallSize n) constexpr { return 200.f * std::pow<float>(1.25f, static_cast<float>(n)); }; 
+    = [] (Ball::BallSize n) constexpr { return 200.f * std::pow<float>(1.15f, static_cast<float>(n)); };
 
 const std::function<float(Ball::BallSize)> Ball::mass
     = [] (Ball::BallSize n) constexpr { return 0.25f * static_cast<float>(n); }; 
@@ -19,8 +17,7 @@ constexpr const float Ball::horizontalSpeed = 25.f;
 Ball::Ball(
     Barta::Vector2f initialPosition,
     bool movingLeft,
-    BallSize size,
-    Barta::Vector2f gravity
+    BallSize size
 ) :
     transformable(std::move(BartaGraph::createNewTransformableInstance())),
     hitbox(new Barta::CircleHitbox(Barta::Circle(
@@ -31,12 +28,12 @@ Ball::Ball(
         {(movingLeft * (-1) + !movingLeft) * Ball::horizontalSpeed, Ball::velocity(size)},
         false,
         Ball::mass(size),
-        gravity
+        Constants::GRAVITY
     ),
     size(size),
-    resource({0}),
-    toBeDeleted(false)
+    resource({0})
 {
+//    std::cout << Ball::ballSize(size) << std::endl;
     auto merger = Barta::SpriteMerger();
     merger.addCircleSprite(Barta::CircleSprite(
         Barta::Circle(
@@ -48,10 +45,6 @@ Ball::Ball(
     this->resource = merger.merge(false);
 
     this->transformable->setPosition(initialPosition);
-}
-
-bool Ball::isToBeDeleted() const{
-    return this->toBeDeleted;
 }
 
 const Barta::TransformableInterface& Ball::getTransformable() const{
@@ -84,6 +77,9 @@ float Ball::getRebounceVelocity() const {
 
 Ball::BallSize Ball::getSize() const {
     return this->size;
+}
+int Ball::getZIndex() const {
+    return 1;
 }
 
 Ball::BallSize& operator--(Ball::BallSize& ballSize) {

@@ -9,6 +9,7 @@
 #include <tuple>
 #include <unordered_map>
 #include <vector>
+#include <array>
 
 // SFML
 #pragma GCC diagnostic push
@@ -22,3 +23,6 @@
 
 // DEBUG
 #include <iomanip>
+
+// C++ 20+
+#include <concepts>

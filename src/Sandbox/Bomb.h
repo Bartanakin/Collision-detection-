@@ -2,10 +2,12 @@
 #include"BartaObject.h"
 #include "Collisions/CollisionAwareInterface.h"
 #include "Gun.h"
+#include "DeletableObject.h"
 
 class Bomb: 
     public Barta::BartaObjectInterface,
-	public Barta::CollisionAwareInterface {
+	public Barta::CollisionAwareInterface,
+    public Barta::DeletableObject {
 	public:
 
 	Bomb(
@@ -14,7 +16,7 @@ class Bomb:
     ) noexcept;
 	~Bomb() noexcept = default;
 
-	bool isToBeDeleted() const override;
+    bool isToBeDeleted() const override { return Barta::DeletableObject::isToBeDeleted(); };
 
 	const Barta::TransformableInterface& getTransformable() const override;
 
@@ -30,14 +32,14 @@ class Bomb:
 
 	void setDynamicsDTO(const Barta::DynamicsDTO&) override;
 
-    void markToBeDeleted() { this->toDelete = true; }
+    void markToBeDeleted();
+    int getZIndex() const override;
 
-	private:
+private:
 	std::unique_ptr<Barta::TransformableInterface> transformable;
 	std::unique_ptr<Barta::HitboxInterface> hitbox;
 
     Barta::DynamicsDTO dynamics;
-    bool toDelete;
 
 	Barta::BartaSprite resource;
 };

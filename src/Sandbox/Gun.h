@@ -1,12 +1,14 @@
 #pragma once
 #include"BartaObject.h"
 #include "Collisions/CollisionAwareInterface.h"
+#include "DeletableObject.h"
 
 using namespace std::literals;
 
 class Gun: 
     public Barta::BartaObjectInterface,
-    public Barta::DynamicsAwareInterface {
+    public Barta::DynamicsAwareInterface,
+    public Barta::DeletableObject {
 	public:
 
     enum class RotationState {
@@ -18,8 +20,9 @@ class Gun:
     static const std::chrono::milliseconds reloadTime;
 
 	Gun() noexcept;
+	virtual ~Gun() noexcept = default;
 
-	bool isToBeDeleted() const override;
+	bool isToBeDeleted() const override { return Barta::DeletableObject::isToBeDeleted(); }
 
 	const Barta::TransformableInterface& getTransformable() const override;
 
@@ -40,8 +43,9 @@ class Gun:
     RotationState getRotationState() const;
 
     void setRotationState(RotationState, float);
+    int getZIndex() const override;
 
-	void rotate(float, Barta::Vector2f) override;
+    void rotate(float, Barta::Vector2f) override;
 
 	float getRotation() const;
 
@@ -49,7 +53,7 @@ class Gun:
 
     void setLastShotTime(std::chrono::steady_clock::time_point shotTime);
 
-	private:
+private:
 	std::unique_ptr<Barta::TransformableInterface> transformable;
     Barta::DynamicsDTO dynamics;
     RotationState rotationState;

@@ -10,14 +10,9 @@ Bomb::Bomb(
     transformable(std::move(BartaGraph::createNewTransformableInstance())),
     hitbox(new Barta::CircleHitbox(Barta::Circle(10.f, Barta::Vector2f(10.f, 10.f)))),
     dynamics(initDynamics),
-    toDelete(false),
     resource(std::move(Barta::BartaSprite(static_cast<int>(SandboxResource::BOMB))))
 {
     this->transformable->setPosition(initPosition);
-}
-
-bool Bomb::isToBeDeleted() const {
-    return this->toDelete;
 }
 
 const Barta::TransformableInterface &Bomb::getTransformable() const {
@@ -42,4 +37,10 @@ const Barta::DynamicsDTO &Bomb::getDynamicsDTO() const {
 
 void Bomb::setDynamicsDTO(const Barta::DynamicsDTO& dynamics) {
     this->dynamics = dynamics;
+}
+void Bomb::markToBeDeleted() {
+    DeletableObject::markToBeDeleted();
+}
+int Bomb::getZIndex() const {
+    return 1;
 }

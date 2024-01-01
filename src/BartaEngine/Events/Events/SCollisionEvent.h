@@ -29,4 +29,3 @@ namespace Barta {
 		const float delta_t;
 	};
 }
-

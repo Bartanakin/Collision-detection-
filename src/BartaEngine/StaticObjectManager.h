@@ -30,7 +30,7 @@ namespace Barta{
     class StaticObjectManager<T> {
     public:
         StaticObjectManager() noexcept : objects(ListType<T>()) {};
-        ~StaticObjectManager() {};
+        ~StaticObjectManager() = default;
 
         void addObject(T* object) {
             this->objects.push_back(object);

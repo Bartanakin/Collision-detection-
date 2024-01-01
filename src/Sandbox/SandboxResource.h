@@ -7,7 +7,7 @@ enum class SandboxResource {
     RED_BALL,
     GREEN_BALL,
     YELLOW_BLOCK,
-    GIANT_BLOCK,
     GREEN_ARROW,
-    BOMB
+    BOMB,
+    INSTRUCTION
 };

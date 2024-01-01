@@ -20,8 +20,6 @@ project(
 add_compile_definitions(DEBUG=1)
 add_compile_definitions(RELEASE=0)
 
-option(USE_CONAN "Whether to use Conan." OFF)
-
 option(ENABLE_WARNINGS "Enable to add warnings to a target." ON)
 option(ENABLE_WARNINGS_AS_ERRORS "Enable to treat warnings as errors." OFF)
 
@@ -59,11 +57,6 @@ endif()
 #     include(LTO)
 # endif()
 
-if(USE_CONAN)
-    message(STATUS "Using Conan")
-    include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
-endif()
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -79,7 +72,37 @@ FetchContent_MakeAvailable(SFML)
 
 add_subdirectory(src)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp
+        src/Sandbox/Subscribers/SceneChangeSubscriber.cpp
+        src/Sandbox/Subscribers/SceneChangeSubscriber.h
+        src/BartaEngine/Events/Subscribers/HitboxPositionCheckSubscriberProxy.h
+        src/Sandbox/Objects/Button.cpp
+        src/Sandbox/Objects/Button.h
+        src/BartaEngine/Graphics/SpriteBuilder/StringSpriteBuilder.cpp
+        src/BartaEngine/Graphics/SpriteBuilder/StringSpriteBuilder.h
+        src/BartaEngine/Graphics/SpriteBuilder/StringSprite.h
+        src/Sandbox/Subscribers/ExitButtonSubscriber.cpp
+        src/Sandbox/Subscribers/ExitButtonSubscriber.h
+        src/Sandbox/Subscribers/ButtonHoverSubscriber.cpp
+        src/Sandbox/Subscribers/ButtonHoverSubscriber.h
+        src/Sandbox/Subscribers/StopGameSubscriber.cpp
+        src/Sandbox/Subscribers/StopGameSubscriber.h
+        src/Sandbox/Objects/StageSelectButton.cpp
+        src/Sandbox/Objects/StageSelectButton.h
+        src/Sandbox/Subscribers/StageSelectSubscriber.cpp
+        src/Sandbox/Subscribers/StageSelectSubscriber.h
+        src/Sandbox/Subscribers/Collisions/PlayerHitSubscriber.cpp
+        src/Sandbox/Subscribers/Collisions/PlayerHitSubscriber.h
+        src/Sandbox/Objects/Flash.cpp
+        src/Sandbox/Objects/Flash.h
+        src/Sandbox/CustomEvents/FlashMessageEvent.h
+        src/Sandbox/Subscribers/FlashMessageSubscriber.cpp
+        src/Sandbox/Subscribers/FlashMessageSubscriber.h
+        src/Sandbox/Objects/Instruction.cpp
+        src/Sandbox/Objects/Instruction.h
+        src/Sandbox/Subscribers/InstructionButtonSubscriber.cpp
+        src/Sandbox/Subscribers/InstructionButtonSubscriber.h
+)
 target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC 

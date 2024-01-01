@@ -1,13 +1,15 @@
 #pragma once
-#include"BartaObject.h"
-#include"SandboxResource.h"
+#include "BartaObject.h"
 #include "Collisions/CollisionAwareInterface.h"
+#include "DeletableObject.h"
+#include "SandboxResource.h"
 #include <Graphics/SpriteBuilder/SpriteMerger.h>
 #include <functional>
 
 class Ball : 
 	public Barta::BartaObjectInterface, 
-	public Barta::CollisionAwareInterface {
+	public Barta::CollisionAwareInterface,
+    public Barta::DeletableObject {
 public:
     enum class BallSize {
         VERY_SMALL = 1,
@@ -24,12 +26,11 @@ public:
 	Ball(
         Barta::Vector2f initialPosition,
         bool movingLeft,
-        BallSize size,
-        Barta::Vector2f gravity
+        BallSize size
     );
 	~Ball() noexcept = default;
 
-	bool isToBeDeleted() const override;
+    bool isToBeDeleted() const override { return Barta::DeletableObject::isToBeDeleted(); };
 
 	const Barta::TransformableInterface& getTransformable() const override;
 
@@ -49,9 +50,9 @@ public:
 
     BallSize getSize() const;
 
-    inline void markToBeDeleted() { this->toBeDeleted = true; }
-
     inline void setVelocity(Barta::Vector2f velocity) { this->dynamicsDTO.velocity = velocity; }
+
+    int getZIndex() const override;
 
 private:
 	std::unique_ptr<Barta::TransformableInterface> transformable;
@@ -60,7 +61,6 @@ private:
     BallSize size;
 
 	Barta::BartaSprite resource;
-    bool toBeDeleted;
 };
 
 Ball::BallSize& operator--(Ball::BallSize& ballSize);

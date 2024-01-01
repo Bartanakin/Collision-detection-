@@ -1,13 +1,16 @@
 #pragma once
-#include<Events/Events/CollisionEvent.h>
-#include<Events/BartaEventLoggerInterface.h>
 #include "BombWallSubscriber.h"
+#include "DeletableObject.h"
+#include <Events/BartaEventLoggerInterface.h>
 
 class BombCollisionSubscriber:
-    public Subscribers::BombWall {
+    public Subscribers::BombWall,
+    public Barta::DeletableObject {
 	public:
 
-	BombCollisionSubscriber() noexcept;
+	BombCollisionSubscriber(
+        bool* deleteWatch
+    ) noexcept;
     BombCollisionSubscriber(const BombCollisionSubscriber&) = delete;
     BombCollisionSubscriber& operator=(const BombCollisionSubscriber&) = delete;
     

@@ -1,7 +1,10 @@
 #include "BombCollisionSubscriber.h"
 
-BombCollisionSubscriber::BombCollisionSubscriber() noexcept :
-    Subscribers::BombWall()
+BombCollisionSubscriber::BombCollisionSubscriber(
+    bool* deleteWatch
+) noexcept
+    : Subscribers::BombWall(),
+      Barta::DeletableObject(deleteWatch)
 {}
 
 bool BombCollisionSubscriber::handle(Events::BombWall &event) {
@@ -11,5 +14,5 @@ bool BombCollisionSubscriber::handle(Events::BombWall &event) {
 }
 
 bool BombCollisionSubscriber::isValid() const noexcept {
-    return true;
+    return !this->isToBeDeleted();
 }

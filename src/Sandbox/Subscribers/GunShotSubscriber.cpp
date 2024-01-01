@@ -4,14 +4,14 @@
 constexpr const float GunShotSubscriber::INITIAL_SPEED = 400.f; 
 
 GunShotSubscriber::GunShotSubscriber(
+    bool* deleteWatch,
     Player* player,
     BombList &bombList,
-    const Barta::Vector2f gravity,
     Barta::ObjectManagerInterface& objectManager
-) noexcept :
+) noexcept
+    : Barta::DeletableObject(deleteWatch),
     player(player),
     bombList(bombList),
-    gravity(gravity),
     objectManager(objectManager)
 {}
 
@@ -33,13 +33,12 @@ bool GunShotSubscriber::handle(Barta::KeyPressedEvent &event) {
             },
             false,
             1.f,
-            this->gravity
+            Constants::GRAVITY
         }
     );
     this->player->getGun()->setLastShotTime(std::chrono::steady_clock::now());
 
     this->bombList.push_back(bomb);
-	this->objectManager.addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(bomb));
 	this->objectManager.addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(bomb));
 	this->objectManager.addNewObject(bomb);
 
@@ -47,5 +46,5 @@ bool GunShotSubscriber::handle(Barta::KeyPressedEvent &event) {
 }
 
 bool GunShotSubscriber::isValid() const noexcept {
-    return true;
+    return !this->isToBeDeleted();
 }

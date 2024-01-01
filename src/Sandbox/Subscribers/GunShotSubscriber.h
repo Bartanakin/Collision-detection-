@@ -1,21 +1,21 @@
 #pragma once
 #include <Events/Events/KeyPressedEvent.h>
 #include <Events/Events/KeyReleasedEvent.h>
-#include <Events/Events/CollisionEvent.h>
 #include "../Player.h"
 #include "../ListsDefinitions.h"
 #include <ObjectManagerInterface.h>
 
 class GunShotSubscriber:
-    public Barta::KeyPressedSubscriberInterface {
+    public Barta::KeyPressedSubscriberInterface,
+    public Barta::DeletableObject {
 	public:
 
     static const float INITIAL_SPEED;
 
 	GunShotSubscriber(
+        bool* deleteWatch,
         Player* player,
         BombList& bombList,
-        const Barta::Vector2f gravity,
         Barta::ObjectManagerInterface& objectManager
     ) noexcept;
 	GunShotSubscriber(const GunShotSubscriber&) = delete;
@@ -30,6 +30,5 @@ class GunShotSubscriber:
 
     Player* player;
     BombList& bombList;
-    const Barta::Vector2f gravity;
     Barta::ObjectManagerInterface& objectManager;
 };

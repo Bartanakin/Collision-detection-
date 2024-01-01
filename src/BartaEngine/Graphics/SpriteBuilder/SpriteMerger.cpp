@@ -50,6 +50,23 @@ Barta::SpriteMerger* Barta::SpriteMerger::addCircleSprite(const CircleSprite & c
     return this;
 }
 
+Barta::SpriteMerger* Barta::SpriteMerger::addString(const Barta::StringSprite& stringSprite) {
+    this->types.push_back(SpriteType::VARCHAR256);
+    this->data.push_back(stringSprite.origin.x);
+    this->data.push_back(stringSprite.origin.y);
+    this->data.push_back(0.f);
+    this->data.push_back(static_cast<float>(stringSprite.fontSize));
+    size_t size = stringSprite.string.size();
+    if (size > 256) {
+        size = 256;
+    }
+
+    this->data.insert(this->data.end(), 64, 0.f);
+    std::copy(stringSprite.string.begin(), stringSprite.string.end(), this->data.end() - 64);
+
+    return this;
+}
+
 Barta::BartaSprite Barta::SpriteMerger::merge(bool reloadCache) {
     auto sprite = BartaSprite(
         reloadCache,

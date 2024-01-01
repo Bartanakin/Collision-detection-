@@ -38,7 +38,7 @@ namespace Barta {
                 return;
             }
             
-            timer.setCurrentDeltaTime(delta_time);
+            timer.setCurrentDeltaTime(std::min(delta_time + COLLISION_EPS, timer.getCurrentDeltaTime()));
             this->logEvent(eventLogger, delta_time);
         }
 
@@ -68,6 +68,7 @@ namespace Barta {
         protected:
         template<typename ObjectManager, typename TestExecutor>
         float execute(ObjectManager& objectManager, TestExecutor& testExecutor) {
+            this->testResults = {};
             float delta_time = 1000.f; // TODO
             auto testResults = testExecutor.template executeTests<T1, T2>(
                 objectManager.getList(static_cast<T1*>(nullptr)),
@@ -77,9 +78,14 @@ namespace Barta {
             for (const auto& testResult : testResults) {
                 if (testResult.collisionTestResult.timePassed < delta_time && !testResult.collisionTestResult.staticCollision) {
                     delta_time = testResult.collisionTestResult.timePassed;
-                    this->testResult = testResult;
                 }
 			}
+
+            for (const auto& testResult : testResults) {
+                if (testResult.collisionTestResult.timePassed < delta_time + COLLISION_EPS && !testResult.collisionTestResult.staticCollision) {
+                    this->testResults.push_back(testResult);
+                }
+            }
 
             this->my_time = delta_time;
 
@@ -89,12 +95,14 @@ namespace Barta {
         template<typename EventLogger>
         void logEvent(EventLogger& eventLogger, const float min_time) {
             if (min_time >= this->my_time) {
-                eventLogger.template logEvent(SCollisionEvent<T1, T2>(this->testResult, this->my_time));
+                for (auto& testResult : this->testResults) {
+                    eventLogger.template logEvent(SCollisionEvent<T1, T2>(testResult, this->my_time));
+                }
             }
         }
 
         private:
-        SExtendedCollisionResult<T1, T2> testResult = {};
+        std::vector<SExtendedCollisionResult<T1, T2>> testResults;
         float my_time = 1000.f;
     };
 

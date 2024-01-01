@@ -1,7 +1,7 @@
 #pragma once
-#include "../Events/CollisionEvent.h"
-#include "../Events/VelocityChangeEvent.h"
 #include "../BartaEventLoggerInterface.h"
+#include "../Events/VelocityChangeEvent.h"
+#include "Collisions/CollisionAwareInterface.h"
 
 namespace Barta {
 

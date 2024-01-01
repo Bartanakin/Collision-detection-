@@ -7,8 +7,10 @@ constexpr const float GunMoveSubscriber::ROTATING_COUNTER_CLOCKWISE = -GunMoveSu
 constexpr const float GunMoveSubscriber::ROTATING_CLOCKWISE = GunMoveSubscriber::ROTATION_SPEED; 
 
 GunMoveSubscriber::GunMoveSubscriber(
+    bool* deleteWatch,
     Gun* gun
-) noexcept :
+) noexcept
+    : Barta::DeletableObject(deleteWatch),
     gun(gun)
 {}
 
@@ -46,5 +48,5 @@ bool GunMoveSubscriber::handle(Barta::KeyReleasedEvent &event) {
 }
 
 bool GunMoveSubscriber::isValid() const noexcept {
-    return true;
+    return !this->isToBeDeleted();
 }

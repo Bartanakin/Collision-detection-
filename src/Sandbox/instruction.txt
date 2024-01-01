@@ -1,0 +1,15 @@
+In each stage your goal is to destroy all balls                 .
+
+The balls have different sizes. After being hit the ball splits into smaller ones.
+
+By clicking spacebar you can shoot a bomb in the direction indicated
+
+ by the green arrow.
+
+You can rotate the arrow by pressing left arrow or right arrow on the keyboard.
+
+Finally, you can move the player            sideways by pressing A and D.
+
+Be careful, if the player            is hit by the ball            , the stage ends.
+
+Good luck.

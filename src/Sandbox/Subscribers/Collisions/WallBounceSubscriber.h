@@ -3,9 +3,14 @@
 #include "BallWallSubscriber.h"
 
 namespace Subscribers {
-    class WallBounce: public BallWall {
+    class WallBounce:
+        public BallWall,
+        public Barta::DeletableObject {
         public:
-        WallBounce(Barta::BartaEventLoggerInterface& eventLogger) noexcept;
+        WallBounce(
+            bool* deleteWatch,
+            Barta::BartaEventLoggerInterface& eventLogger
+        ) noexcept;
         virtual ~WallBounce() noexcept = default;
 
         virtual bool handle(Events::BallWall& event);

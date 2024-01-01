@@ -1,9 +1,10 @@
 #pragma once
 #include "../../pch.h"
-#include "SpriteBuilder.h"
 #include "../BartaSprite.h"
-#include "RectangleWithColorsSprite.h"
 #include "CircleSprite.h"
+#include "RectangleWithColorsSprite.h"
+#include "SpriteBuilder.h"
+#include "StringSprite.h"
 
 namespace Barta{
     class SpriteMerger {
@@ -12,6 +13,7 @@ namespace Barta{
 
         SpriteMerger* addRectanglewithColors(const RectangleWithColorsSprite& addRectanglewithColors);
         SpriteMerger* addCircleSprite(const CircleSprite& circleSprite);
+        SpriteMerger* addString(const Barta::StringSprite& stringSprite);
         
         BartaSprite merge(bool reloadCache);
 

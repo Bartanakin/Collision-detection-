@@ -14,7 +14,13 @@ namespace Barta{
             radius,
             color (rgba)
         */
-        CIRCLE
+        CIRCLE,
+        /*
+            x, y, z, // top-left coordinates
+            font_size,
+            char[256]
+        */
+        VARCHAR256
     };
 
     class BartaSprite {

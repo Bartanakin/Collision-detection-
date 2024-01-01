@@ -1,11 +1,13 @@
 #pragma once
+#include "../Gun.h"
+#include "DeletableObject.h"
 #include <Events/Events/KeyPressedEvent.h>
 #include <Events/Events/KeyReleasedEvent.h>
-#include "../Gun.h"
 
 class GunMoveSubscriber:
     public Barta::KeyPressedSubscriberInterface,
-    public Barta::KeyReleasedSubscriberInterface {
+    public Barta::KeyReleasedSubscriberInterface,
+    public Barta::DeletableObject {
 	public:
 
     static const float ROTATION_SPEED;
@@ -15,6 +17,7 @@ class GunMoveSubscriber:
     static const float ROTATING_CLOCKWISE;
 
 	GunMoveSubscriber(
+        bool* deleteWatch,
         Gun* gun
     ) noexcept;
 	GunMoveSubscriber(const GunMoveSubscriber&) = delete;

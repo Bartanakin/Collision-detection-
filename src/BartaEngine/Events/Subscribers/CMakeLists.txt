@@ -1,6 +1,4 @@
-target_sources(${LIBRARY_NAME} PUBLIC 
-    "CollisionResponseSubscriber.cpp"
-    "CollisionResponseSubscriber.h"
+target_sources(${LIBRARY_NAME} PUBLIC
     "DynamicsChangeSubscriber.cpp"
     "DynamicsChangeSubscriber.h"
 )

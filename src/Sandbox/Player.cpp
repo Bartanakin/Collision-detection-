@@ -8,18 +8,13 @@ Player::Player(
     Barta::DynamicsDTO dynamics,
     Gun* gun
 ) : 
-	transformable( std::move(BartaGraph::createNewTransformableInstance()) ),
+	transformable(BartaGraph::createNewTransformableInstance()),
 	hitbox( new Barta::AABB_Hitbox( Barta::AABB( Barta::Vector2f( 0.f, 0.f ), Barta::Vector2f( 40.f, 60.f ) ) ) ),
     dynamics(dynamics),
     gun(gun),
-    resource(std::move(Barta::BartaSprite(static_cast<int>(SandboxResource::YELLOW_BLOCK))))
+    resource(Barta::BartaSprite(static_cast<int>(SandboxResource::YELLOW_BLOCK)))
 {
-	this->transformable->setPosition(initialPosition);
-    this->gun->setPosition(initialPosition + Barta::Vector2f(10.f, 10.f));
-}
-
-bool Player::isToBeDeleted() const{
-	return false;
+	this->setPosition(initialPosition);
 }
 
 const Barta::TransformableInterface& Player::getTransformable() const{
@@ -49,4 +44,12 @@ void Player::setDynamicsDTO( const Barta::DynamicsDTO& dynamics ){
 
 void Player::setVelocity(Barta::Vector2f velocity) {
     this->dynamics.velocity = velocity;
+}
+void Player::setPosition(Barta::Vector2f position) {
+    this->transformable->setPosition(position);
+    this->gun->rotate(-this->gun->getRotation(), this->gun->getDynamicsDTO().massCenter);
+    this->gun->setPosition(position + Barta::Vector2f(10.f, 10.f));
+}
+int Player::getZIndex() const {
+    return 2;
 }

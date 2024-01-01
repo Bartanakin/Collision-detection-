@@ -143,6 +143,7 @@ namespace Barta {
             return this->filterList<T, T>(this->decorated.template executeTestsForSame<T>(list));
         }
 
+#define COLLISION_EPS 0.00001f
 		private:
         template<StaticCollisionAware T1, StaticCollisionAware T2>
         ResultList<T1, T2> filterList(ResultList<T1, T2> resultsList) {
@@ -179,7 +180,7 @@ namespace Barta {
 
             i = resultsList.cbegin();
             while (i != resultsList.cend()) {
-                if (i->collisionTestResult.timePassed > max_time) {
+                if (i->collisionTestResult.timePassed > max_time + COLLISION_EPS) {
                     i = resultsList.erase(i);
 
                     continue;
@@ -190,8 +191,6 @@ namespace Barta {
 
                 i++;
             }
-
-            // this->timer.setCurrentDeltaTime(max_time);
 
             return resultsList;
         }

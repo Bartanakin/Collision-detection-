@@ -18,6 +18,14 @@ Barta::BartaObjectManager::~BartaObjectManager() {
 }
 
 void Barta::BartaObjectManager::addNewObject( BartaObjectInterface* const newObject ){
+    for (auto it = this->objectList.begin(); it != this->objectList.end(); it++) {
+        if ((*it)->getZIndex() >= newObject->getZIndex()) {
+            this->objectList.insert(it, newObject);
+
+            return;
+        }
+    }
+
 	this->objectList.push_back( newObject );
 }
 

@@ -1,9 +1,15 @@
 #pragma once
 
-#include <Events/BartaEventLoggerInterface.h>
 #include "BallCreateEvent.h"
+#include "FlashMessageEvent.h"
+#include "SceneChangeEvent.h"
+#include "StageChangeEvent.h"
+#include <Events/BartaEventLoggerInterface.h>
 
 typedef Barta::EventMatcher<
-    BallCreateEvent
+    BallCreateEvent,
+    SceneChangeEvent,
+    StageChangeEvent,
+    FlashMessageEvent
 > PostDynamicEventLogger;
 

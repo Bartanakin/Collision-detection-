@@ -10,6 +10,10 @@ add_library(${LIBRARY_NAME} STATIC
     "BartaObject.h"
     "ObjectManagerInterface.h"
     "ReduceableList.h"
+        "DeleteWatchSingleton.cpp"
+        DeletableObject.cpp
+        Utilities/EnumeratedArray.h
+        Events/PositionAwareConcept.h
 )
 
 # target_precompile_headers(${LIBRARY_NAME} PUBLIC

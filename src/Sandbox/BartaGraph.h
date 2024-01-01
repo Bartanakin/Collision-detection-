@@ -1,17 +1,18 @@
 #pragma once
-#include<Application.h>
-#include"Player.h"
-#include"Objects/GiantBlock.h"
-#include"Ball.h"
-#include"Dynamics/TimerInterface.h"
-#include "ListsDefinitions.h"
+#include "Ball.h"
 #include "CustomEvents/PostDynamicEventLogger.h"
+#include "Dynamics/TimerInterface.h"
+#include "ListsDefinitions.h"
+#include "Player.h"
+#include "Stages/StageInterface.h"
+#include <Application.h>
 #include <StaticObjectManager.h>
 
 class BartaGraph :public Barta::Application{
 	void checkLogic() override;
 	void preGarbageCollect() override;
 	void postDynamicUpdate() override;
+    bool isRunning() const override;
 public:
 	BartaGraph(std::unique_ptr<Barta::TimerInterface> const);
     BartaGraph(const BartaGraph&) = delete;
@@ -24,19 +25,13 @@ public:
 private:
     std::unique_ptr<PostDynamicEventLogger> postDynamicEventLogger;
 
-	Ball* ball1;
-	Ball* ball2;
-	Ball* ball3;
-
-	Player* player;
-
-	GiantBlock* upperBound;
-	GiantBlock* leftBound;
-	GiantBlock* bottomBound;
-	GiantBlock* rightBound;
-
     CollisionEventsLogger collisionEventsLogger;
     CollisionCoreExecutor collisionExecutor;
     ListManager objectLists;
+
+    SceneChangeEvent::SceneType currentSceneType;
+    StageChangeEvent::StageID currentStageId;
+
+    bool isRunning_v;
 };
 

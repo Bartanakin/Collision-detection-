@@ -1,9 +1,11 @@
 #include "BallCreateSubscriber.h"
 
 BallCreateSubscriber::BallCreateSubscriber(
+    bool* deleteWatch,
     Barta::ObjectManagerInterface &objectManager,
     BallList &ballList
-) noexcept :
+) noexcept
+    : Barta::DeletableObject(deleteWatch),
     objectManager(objectManager),
     ballList(ballList)
 {}
@@ -20,5 +22,5 @@ bool BallCreateSubscriber::handle(BallCreateEvent &event) {
 }
 
 bool BallCreateSubscriber::isValid() const noexcept {
-    return true;
+    return !this->isToBeDeleted();
 }

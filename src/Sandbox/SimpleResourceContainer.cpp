@@ -2,14 +2,14 @@
 #include "SimpleResourceContainer.h"
 #include "SandboxResource.h"
 
-const std::string SimpleResourceContainer::REPOSITORY_DIR = std::string("C:\\Users\\barta\\Desktop\\SFMLTemplate\\BartaEngine2\\repository"); 
-
-SimpleResourceContainer::SimpleResourceContainer()
-    : texture({}),
+SimpleResourceContainer::SimpleResourceContainer(
+    std::string repositoryDir
+)
+    : repositoryDir(std::move(repositoryDir)),
+    texture({}),
     redBallTextureRect({}),
     greenBallTextureRect({}),
     yellowBlockRect({}),
-    giantBlock({}) ,
     inputTexture({}),
     greenArrow({}),
     bomb({})
@@ -24,9 +24,9 @@ bool SimpleResourceContainer::hasTexture(const int resource) const{
 	case SandboxResource::RED_BALL:
 	case SandboxResource::GREEN_BALL:
 	case SandboxResource::YELLOW_BLOCK:
-	case SandboxResource::GIANT_BLOCK:
 	case SandboxResource::GREEN_ARROW:
 	case SandboxResource::BOMB:
+	case SandboxResource::INSTRUCTION:
 		return true;
 
 	case SandboxResource::NONE:
@@ -40,11 +40,11 @@ const sf::Texture& SimpleResourceContainer::getTexture(const int resource) const
 	case SandboxResource::RED_BALL:
 	case SandboxResource::GREEN_BALL:
 	case SandboxResource::YELLOW_BLOCK:
-	case SandboxResource::GIANT_BLOCK:
 	case SandboxResource::BOMB:
 		return this->texture;
 
 	case SandboxResource::GREEN_ARROW:
+    case SandboxResource::INSTRUCTION:
 		return this->inputTexture;
 
 	case SandboxResource::NONE:
@@ -64,14 +64,14 @@ const sf::IntRect SimpleResourceContainer::getTextureRect( const int resource ) 
 	case SandboxResource::YELLOW_BLOCK:
 		return this->yellowBlockRect;
 
-	case SandboxResource::GIANT_BLOCK:
-		return this->giantBlock;
-
 	case SandboxResource::GREEN_ARROW:
 		return this->greenArrow;
 
 	case SandboxResource::BOMB:
 		return this->bomb;
+
+    case SandboxResource::INSTRUCTION:
+        return this->instruction;
 
 	case SandboxResource::NONE:
 	default:
@@ -102,12 +102,6 @@ void SimpleResourceContainer::init(){
 		yellowBlock.setPosition( sf::Vector2f( 160, 0 ) );
 		renderTexture.draw( yellowBlock );
 
-		sf::RectangleShape giantBlock;
-		giantBlock.setSize(sf::Vector2f(500.f, 500.f));
-		giantBlock.setFillColor(sf::Color(87, 150, 138));
-		giantBlock.setPosition(sf::Vector2f(200.f, 0));
-		renderTexture.draw(giantBlock);
-
 		sf::CircleShape bomb;
 		bomb.setRadius(10.f);
 		bomb.setFillColor(sf::Color(255, 250, 160));
@@ -120,10 +114,10 @@ void SimpleResourceContainer::init(){
 		this->redBallTextureRect = std::move( sf::IntRect( 0, 0, 80, 80 ) );
 		this->greenBallTextureRect = std::move( sf::IntRect( 80, 0, 80, 80 ) );
 		this->yellowBlockRect = std::move( sf::IntRect( 160, 0, 40, 60 ) );
-		this->giantBlock = std::move( sf::IntRect( 200, 0, 500, 500 ) );
 		this->bomb = std::move( sf::IntRect( 700, 0, 20, 20 ) );
 
-        this->inputTexture.loadFromFile(REPOSITORY_DIR + "\\images\\greenArrow.png");
+        this->inputTexture.loadFromFile(this->repositoryDir + "\\images\\texture.png");
 
         this->greenArrow = std::move(sf::IntRect(0, 0, 20, 40));
+        this->instruction = std::move(sf::IntRect(20, 0, 500, 500));
 }

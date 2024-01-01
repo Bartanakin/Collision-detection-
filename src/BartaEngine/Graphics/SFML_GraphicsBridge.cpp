@@ -1,16 +1,16 @@
-#include "pch.h"
 #include "SFML_GraphicsBridge.h"
 #include "SFML_Bridge/SpriteResourceMatcher.h"
-#include "../Events/Events/LeftClickEvent.h"
-#include "../Events/Events/KeyPressedEvent.h"
-#include "../Events/Events/KeyReleasedEvent.h"
 
 Barta::SFML_GraphicsBridge::SFML_GraphicsBridge(
-    std::unique_ptr<Barta::ResourceContainerInterface> resourceContainer
+    std::unique_ptr<Barta::ResourceContainerInterface> resourceContainer,
+    const std::string repositoryDir
 ) noexcept
 	: sf_window( nullptr ),
-	resourceMatcher(std::make_unique<Barta::SpriteResourceMatcher>(std::move(resourceContainer)))
-{}
+	resourceMatcher(std::make_unique<Barta::SpriteResourceMatcher>(std::move(resourceContainer))),
+      arialFont(std::make_unique<sf::Font>())
+{
+    arialFont->loadFromFile(repositoryDir  + "\\fonts\\arial.ttf");
+}
 
 Barta::SFML_GraphicsBridge::~SFML_GraphicsBridge(){
 	delete this->sf_window;
@@ -65,6 +65,12 @@ bool Barta::SFML_GraphicsBridge::logEvents( BartaEventLoggerInterface& eventLogg
                 LeftClickEvent(Vector2f(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)))
             );
 		}
+
+        if( event.type == sf::Event::MouseMoved){
+            eventLogger.logEvent(
+                MouseMoveEvent(Vector2f(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)))
+            );
+        }
         
         BartaKeyMap key;
         if (event.key.code == sf::Keyboard::D)
@@ -184,6 +190,25 @@ void Barta::SFML_GraphicsBridge::handleCustomeResource(
             this->sf_window->draw(circleShape);
 
             dataOffset += 8;
+        }
+
+        if (type == SpriteType::VARCHAR256) {
+            char c_string[64];
+
+            std::copy(data.begin() + dataOffset + 4, data.begin() + dataOffset + 4 + 64, c_string);
+
+            auto string = sf::String(c_string);
+            auto text = sf::Text();
+            text.setString(string);
+            text.setFont(*this->arialFont);
+            text.setCharacterSize(static_cast<unsigned int>(data[dataOffset + 3]));
+            text.setPosition(
+                data[dataOffset] + sf_transformable.getPosition().x,
+                data[dataOffset + 1] + sf_transformable.getPosition().y
+            );
+            this->sf_window->draw(text);
+
+            dataOffset += 3 + 1 + 64;
         }
     }
 }

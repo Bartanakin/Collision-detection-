@@ -1,21 +1,26 @@
 #pragma once
-#include"BartaObject.h"
-#include"SandboxResource.h"
+#include "BartaObject.h"
 #include "Collisions/CollisionAwareInterface.h"
+#include "DeletableObject.h"
+#include "SandboxResource.h"
 #include <Graphics/BartaSprite.h>
+#include <Graphics/Color.h>
 
 class Wall : 
 	public Barta::BartaObjectInterface, 
-	public Barta::CollisionAwareInterface {
+	public Barta::CollisionAwareInterface,
+    public Barta::DeletableObject {
 public:
+    static const Barta::Color WALL_COLOR;
+
 	Wall(
         Barta::Vector2f initialPosition,
         Barta::AABB aabb,
         Barta::BartaSprite resource
     );
-	~Wall() noexcept = default;
+	virtual ~Wall() noexcept = default;
 
-	bool isToBeDeleted() const override;
+    bool isToBeDeleted() const override { return Barta::DeletableObject::isToBeDeleted(); };
 
 	Barta::TransformableInterface& getTransformable() const override;
 
@@ -29,7 +34,8 @@ public:
 
 	void setDynamicsDTO( const Barta::DynamicsDTO& ) override;
 
-	inline virtual void rotate(float, Barta::Vector2f) override {}
+	inline void rotate(float, Barta::Vector2f) override {}
+    int getZIndex() const override;
 
 protected:
 	std::unique_ptr<Barta::TransformableInterface> transformable;

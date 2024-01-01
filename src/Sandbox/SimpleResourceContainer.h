@@ -4,7 +4,9 @@
 
 class SimpleResourceContainer : public Barta::ResourceContainerInterface{
 public:
-    SimpleResourceContainer();
+    SimpleResourceContainer(
+        std::string repositoryDir
+    );
     virtual ~SimpleResourceContainer();
 
     virtual bool hasTexture( const int resource ) const override;
@@ -14,16 +16,16 @@ public:
     virtual const sf::IntRect getTextureRect( const int resource ) const override;
 
 private:
-    const static std::string REPOSITORY_DIR;
+    const std::string repositoryDir;
 
     sf::Texture texture;
     sf::IntRect redBallTextureRect;
     sf::IntRect greenBallTextureRect;
     sf::IntRect yellowBlockRect;
-    sf::IntRect giantBlock;
     sf::Texture inputTexture;
     sf::IntRect greenArrow;
     sf::IntRect bomb;
+    sf::IntRect instruction;
 
     void init();
 };

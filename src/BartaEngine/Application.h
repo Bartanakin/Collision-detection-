@@ -7,19 +7,18 @@
 #include "Dynamics/TimerInterface.h"
 #include "Dynamics/DynamicsUpdateStrategyInterface.h"
 #include "Collisions/CollisionDetectionStrategyInterface.h"
-#include "Collisions/CollisionExecutors/CollisionTestExecutorInterface.h"
 
 namespace Barta{
 	class Application{
 	public:
-		Application( 
+		Application(
+            std::string windowName,
 			std::unique_ptr<BartaGraphicsBridgeInterface> graphicsBridge,
 			std::unique_ptr<BartaEventLoggerInterface> eventLogger,
 			std::unique_ptr<BartaEventLoggerInterface> postDynamicsEventLogger,
 			std::unique_ptr<ObjectManagerInterface> objectManager,
 			std::unique_ptr<TimerInterface> timer,
-			std::unique_ptr<DynamicsUpdateStrategyInterface> dynamicsUpdateStrategy,
-			std::unique_ptr<CollisionTestExecutorInterface> collisionTestExecutor
+			std::unique_ptr<DynamicsUpdateStrategyInterface> dynamicsUpdateStrategy
 		);
         Application(const Application&) = delete;
         Application(Application&&) = delete;
@@ -35,15 +34,17 @@ namespace Barta{
 
         virtual void postDynamicUpdate();
 
+        virtual bool isRunning() const;
+
 	protected:
+        std::string windowName;
 		std::unique_ptr<BartaGraphicsBridgeInterface> graphicsBridge;
 		std::unique_ptr<BartaEventLoggerInterface> eventLogger;
 		std::unique_ptr<BartaEventLoggerInterface> postDynamicsEventLogger;
 		std::unique_ptr<ObjectManagerInterface> objectManager;
 		std::unique_ptr<TimerInterface> timer;
 		std::unique_ptr<DynamicsUpdateStrategyInterface> dynamicsUpdateStrategy; 
-		std::unique_ptr<CollisionTestExecutorInterface> collisionTestExecutor;
-	};
+    };
 
 
 }

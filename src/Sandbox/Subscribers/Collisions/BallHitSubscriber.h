@@ -6,14 +6,18 @@
 #include "../../CustomEvents/PostDynamicEventLogger.h"
 
 namespace Subscribers {
-    class BallHit: public BallBomb {
+    class BallHit:
+        public BallBomb,
+        public Barta::DeletableObject {
 
         static const Barta::Vector2f d; // vector sloped by 45 degrees up to the axis X
 
         public:
         BallHit(
+            bool* deleteWatch,
             PostDynamicEventLogger& postDynamicEventLogger,
-            const Barta::Vector2f gravity
+            BallList& ballList,
+            StageChangeEvent::StageID& currentStageID
         ) noexcept;
         virtual ~BallHit() noexcept = default;
 
@@ -23,6 +27,7 @@ namespace Subscribers {
 
         private:
         PostDynamicEventLogger& postDynamicEventLogger;
-        const Barta::Vector2f gravity;
+        BallList& ballList;
+        StageChangeEvent::StageID& currentStageID;
     };
 };

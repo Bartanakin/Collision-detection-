@@ -1,10 +1,8 @@
 #pragma once
 #include "../../Geometrics/Vector2f.h"
 #include "../TemplateEventSubscriber.h"
-#include "../../Collisions/CollisionExecutors/CollisionTestExecutorInterface.h"
 #include "../../Tests/Utilities/TestUtilities.h"
-
-#define DEBUG_COLLISION_EVENT 0
+#include "../../Dynamics/DynamicsAwareInterface.h"
 
 namespace Barta {
 

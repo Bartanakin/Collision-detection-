@@ -1,170 +1,143 @@
 #include "BartaGraph.h"
-#include"Graphics/SFML_GraphicsBridge.h"
-#include"Geometrics/SFML_Transformable.h"
-#include"Geometrics/Math/BartaMathLibrary.h"
-#include"BartaObjectManager.h"
-#include"Dynamics/ConstVelocityDynamicsUpdateStrategy.h"
-#include"Collisions/CollisionDetectionStrategies/StaticCollisionDetectionStrategy.h"
-#include"Collisions/CollisionDetectionStrategies/DynamicCollisionDetectionStrategy.h"
-#include"Collisions/CollisionExecutors/CollisionTestExecutor.h"
-#include"Collisions/CollisionExecutors/FilterNoCollisionResultsDecorator.h"
-#include"Collisions/CollisionExecutors/FilterCollisionsOvertimeDecorator.h"
-#include "Events/Subscribers/CollisionResponseSubscriber.h"
-#include "Events/Subscribers/StaticCollisionResponseSubscriber.h"
-#include "Events/Subscribers/DynamicsChangeSubscriber.h"
-#include "SimpleResourceContainer.h"
-#include "Subscribers/PlayerMoveSubscriber.h"
-#include "Subscribers/GunMoveSubscriber.h"
-#include "Subscribers/DynamicsChangeSubscriberProxy.h"
-#include "Subscribers/GunShotSubscriber.h"
-#include "Subscribers/Collisions/BombCollisionSubscriber.h"
-#include "ReloadMarker.h"
-#include "Subscribers/Collisions/BallWallSubscriber.h"
-#include "Subscribers/Collisions/WallBounceSubscriber.h"
-#include "Subscribers/Collisions/BallHitSubscriber.h"
+#include "Collisions/CollisionDetectionStrategies/DynamicCollisionDetectionStrategy.h"
 #include "CustomEvents/BallCreateEvent.h"
-#include "Subscribers/BallCreateSubscriber.h"
+#include "CustomEvents/StageChangeEvent.h"
+#include "Dynamics/ConstVelocityDynamicsUpdateStrategy.h"
+#include "Geometrics/Math/BartaMathLibrary.h"
+#include "Geometrics/SFML_Transformable.h"
+#include "Graphics/SFML_GraphicsBridge.h"
+#include "Objects/Flash.h"
+#include "Repository/ObjectsRepository.h"
+#include "Scenes/GameScene.h"
+#include "Scenes/InstructionScene.h"
+#include "Scenes/LobbyScene.h"
+#include "SimpleResourceContainer.h"
+#include "Stages/NoStage.h"
+#include "Stages/StageFive.h"
+#include "Stages/StageFour.h"
+#include "Stages/StageOne.h"
+#include "Stages/StageThree.h"
+#include "Stages/StageTwo.h"
+#include "Subscribers/Collisions/BallHitSubscriber.h"
+#include "Subscribers/Collisions/BombCollisionSubscriber.h"
+#include "Subscribers/Collisions/PlayerHitSubscriber.h"
+#include "Subscribers/Collisions/PlayerWallSubscriber.h"
+#include "Subscribers/Collisions/WallBounceSubscriber.h"
+#include "Subscribers/FlashMessageSubscriber.h"
+#include "Subscribers/SceneChangeSubscriber.h"
+#include "Subscribers/StageChangeSubscriber.h"
+#include "env.h"
 
+/**
+ * @deprecated
+ */
 const Barta::Vector2f gravity = {0.f, 250.f};
 
 BartaGraph::BartaGraph(std::unique_ptr<Barta::TimerInterface> timer)
-	: Application( 
+	: Application(
+        Env::WINDOW_NAME,
 		std::make_unique<Barta::SFML_GraphicsBridge>(
-            std::make_unique<SimpleResourceContainer>()
+            std::make_unique<SimpleResourceContainer>(Env::REPOSITORY_DIR),
+            Env::REPOSITORY_DIR
         ),
 		std::make_unique<Barta::BartaEventLoggerInterface>(),
 		std::make_unique<Barta::BartaEventLoggerInterface>(),
 		std::make_unique<Barta::BartaObjectManager>(),
 		std::move(timer),
-		std::make_unique<Barta::ConstVelocityDynamicsUpdateStrategy>(),
-		std::make_unique<Barta::FilterCollisionsOvertimeDecorator>(
-			std::make_unique<Barta::FilterNoCollisionResultsDecorator>(
-				std::make_unique<Barta::CollisionTestExecutor>(
-                    std::make_unique<Barta::DynamicCollisionDetectionStrategy>(std::make_unique<Barta::BartaMathLibrary>(), *timer)
-                    // std::make_unique<Barta::StaticCollisionDetectionStrategy>(std::make_unique<Barta::BartaMathLibrary>())
-				)
-			),
-			*timer
-		)
-		
+		std::make_unique<Barta::ConstVelocityDynamicsUpdateStrategy>()
 	),
     postDynamicEventLogger(std::make_unique<PostDynamicEventLogger>()),
-    ball1(nullptr),
-    ball2(nullptr),
-    ball3(nullptr),
-    player(nullptr),
-    upperBound(nullptr),
-    leftBound(nullptr),
-    bottomBound(nullptr),
-    rightBound(nullptr),
     collisionEventsLogger({}),
     collisionExecutor(
         {{std::make_unique<Barta::DynamicCollisionDetectionStrategy>(std::make_unique<Barta::BartaMathLibrary>(), *this->timer)}},
         *this->timer
     ),
-    objectLists({})
+    objectLists({}),
+    currentSceneType(SceneChangeEvent::SceneType::LOBBY),
+    currentStageId(StageChangeEvent::StageID::NO_STAGE),
+    isRunning_v(true)
 {
-	this->ball1 = new Ball(
-		Barta::Vector2f(200.f, 559.f),
-        false,
-        Ball::BallSize::SMALL,
-        gravity
-	);
-    this->objectLists.addObject(this->ball1);
-	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(ball1));
-	this->objectManager->addNewObject(ball1);
-
-	// this->ball2 = new Ball(
-	// 	Barta::Vector2f(180.f, 231.f),
-	// 	Barta::DynamicsDTO(Barta::Vector2f(-20.f, 0.f), false, 1.0f, gravity),
-    //     Ball::BallSize::MEDIUM
-	// );
-    // this->objectLists.addObject(this->ball2);
-	// this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(ball2));
-	// this->objectManager->addNewObject(ball2);
-
-	// this->ball3 = new Ball(
-	// 	Barta::Vector2f(120.f, 300.f),
-	// 	Barta::DynamicsDTO(Barta::Vector2f(170.f, -84.f), false, 4.0f, gravity),
-    //     Ball::BallSize::LARGE
-	// );
-    // this->objectLists.addObject(this->ball3);
-	// this->objectManager->addCollidableObject(static_cast<Barta::CollisionAwareInterface*>(ball3));
-	// this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(ball3));
-	// this->objectManager->addNewObject(ball3);
-
-    Gun* gun = new Gun();
-
-	this->player = new Player(
-		Barta::Vector2f(300.f, 600.f - 60.f),
-		Barta::DynamicsDTO({}, false, 1.0f),
-        gun
-	);
-	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(player));
-	this->objectManager->addNewObject(player);
-
-	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(gun));
-    this->objectManager->addNewObject(gun);
-
-	this->upperBound = new GiantBlock({100.f, -400.f});
-    this->objectLists.addObject(this->upperBound);
-	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(this->upperBound));
-	this->objectManager->addNewObject(this->upperBound);
-
-	this->rightBound = new GiantBlock({600.f, 100.f});
-    this->objectLists.addObject(this->rightBound);
-	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(this->rightBound));
-	this->objectManager->addNewObject(this->rightBound);
-
-	this->bottomBound = new GiantBlock({100.f, 600.f});
-    this->objectLists.addObject(this->bottomBound);
-	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(this->bottomBound));
-	this->objectManager->addNewObject(this->bottomBound);
-
-	this->leftBound = new GiantBlock({-400.f, 100.f});
-    this->objectLists.addObject(this->leftBound);
-	this->objectManager->addDynamicsObject(static_cast<Barta::DynamicsAwareInterface*>(this->leftBound));
-	this->objectManager->addNewObject(this->leftBound);
-
-	auto reloadMarker = new ReloadMarker(gun);
-	this->objectManager->addNewObject(reloadMarker);
-
-	this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyPressedSubscriberInterface>(new PlayerMoveSubscriber(this->player)));
-	this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyReleasedSubscriberInterface>(new PlayerMoveSubscriber(this->player)));
-
-    this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyPressedSubscriberInterface>(new GunMoveSubscriber(gun)));
-    this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyReleasedSubscriberInterface>(new GunMoveSubscriber(gun)));
-
-	this->postDynamicsEventLogger->logSubscriber(std::make_unique<Barta::DynamicsChangeSubscriber>());
-	this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyPressedSubscriberInterface>(new GunShotSubscriber(
-        this->player,
-        this->objectLists.StaticObjectManager<Bomb>::getList(),
-        gravity,
+    auto objectsRepository = ObjectsRepository(
+        this->objectLists,
         *this->objectManager
-    )));
+    );
+    StageArray stages;
+    stages[StageChangeEvent::StageID::NO_STAGE] = std::make_unique<NoStage>();
+    stages[StageChangeEvent::StageID::STAGE_I] = std::make_unique<StageOne>(
+        this->objectLists,
+        *this->objectManager,
+        objectsRepository
+    );
+    stages[StageChangeEvent::StageID::STAGE_II] = std::make_unique<StageTwo>(
+        this->objectLists,
+        *this->objectManager,
+        objectsRepository
+    );
+    stages[StageChangeEvent::StageID::STAGE_III] = std::make_unique<StageThree>(
+        this->objectLists,
+        *this->objectManager,
+        objectsRepository
+    );
+    stages[StageChangeEvent::StageID::STAGE_IV] = std::make_unique<StageFour>(
+        this->objectLists,
+        *this->objectManager,
+        objectsRepository
+    );
+    stages[StageChangeEvent::StageID::STAGE_V] = std::make_unique<StageFive>(
+        this->objectLists,
+        *this->objectManager,
+        objectsRepository
+    );
 
-    this->collisionEventsLogger.Barta::EventMatcher<Events::BallWall>::logSubscriber(
-        std::make_unique<Subscribers::WallBounce>(*this->postDynamicsEventLogger)
+    SceneArray scenes;
+
+    auto gameStage = std::make_unique<GameScene>(
+        this->objectManager.get(),
+        this->eventLogger.get(),
+        this->postDynamicsEventLogger.get(),
+        this->objectLists,
+        this->collisionEventsLogger,
+        this->postDynamicEventLogger.get(),
+        this->currentStageId
     );
-    this->collisionEventsLogger.Barta::EventMatcher<Events::BombWall>::logSubscriber(
-        std::make_unique<BombCollisionSubscriber>()
+    auto lobbyStage = std::make_unique<LobbyScene>(
+        this->objectManager.get(),
+        this->eventLogger.get(),
+        this->postDynamicEventLogger.get(),
+        &this->isRunning_v
     );
-    this->collisionEventsLogger.Barta::EventMatcher<Events::BallBomb>::logSubscriber(
-        std::make_unique<Subscribers::BallHit>(
-            *this->postDynamicEventLogger,
-            gravity
+    auto instructionScene = std::make_unique<InstructionScene>(
+        this->objectManager.get(),
+        this->eventLogger.get(),
+        this->postDynamicEventLogger.get()
+    );
+
+    this->postDynamicEventLogger->logSubscriber(
+        std::make_unique<StageChangeSubscriber>(
+            std::move(stages),
+            gameStage.get(),
+            lobbyStage.get()
         )
     );
+
+    scenes[SceneChangeEvent::SceneType::GAME] = std::move(gameStage);
+    scenes[SceneChangeEvent::SceneType::LOBBY] = std::move(lobbyStage);
+    scenes[SceneChangeEvent::SceneType::INSTRUCTION] = std::move(instructionScene);
+
     this->postDynamicEventLogger->logSubscriber(
-        std::unique_ptr<BallCreateSubscriberInterface>(new BallCreateSubscriber(
-            *this->objectManager,
-            this->objectLists.StaticObjectManager<Ball>::getList()
-        ))
+        std::make_unique<SceneChangeSubscriber>(std::move(scenes), this->currentSceneType)
+    );
+
+    auto flash = new Flash({10.f, 10.f});
+    this->objectManager->addNewObject(flash);
+
+    this->postDynamicEventLogger->logSubscriber(
+        std::make_unique<FlashMessageSubscriber>(*this->postDynamicEventLogger, flash)
     );
 }
 
 void BartaGraph::checkLogic() {
-    StaticCollisionLogger().executeAndLog<CollisionEventsLogger, ListManager, CollisionCoreExecutor>(
+    (StaticCollisionLogger()).executeAndLog<CollisionEventsLogger, ListManager, CollisionCoreExecutor>(
         this->collisionEventsLogger,
         this->objectLists,
         this->collisionExecutor,
@@ -190,4 +163,6 @@ BartaGraph::~BartaGraph() {}
 std::unique_ptr<Barta::TransformableInterface> BartaGraph::createNewTransformableInstance(){
 	return std::unique_ptr<Barta::TransformableInterface>(new Barta::SFML_Transformable());
 }
-
+bool BartaGraph::isRunning() const {
+    return this->isRunning_v;
+}

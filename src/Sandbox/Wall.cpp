@@ -3,6 +3,8 @@
 #include "BartaGraph.h"
 #include "SandboxResource.h"
 
+constexpr const Barta::Color Wall::WALL_COLOR = Barta::Color(87, 150, 138);
+
 Wall::Wall(
     Barta::Vector2f initialPosition,
     Barta::AABB aabb,
@@ -14,10 +16,6 @@ Wall::Wall(
     resource(std::move(resource))
 {
 	this->transformable->setPosition(initialPosition);
-}
-
-bool Wall::isToBeDeleted() const {
-	return false;
 }
 
 Barta::TransformableInterface& Wall::getTransformable() const {
@@ -40,6 +38,9 @@ const Barta::DynamicsDTO& Wall::getDynamicsDTO() const {
 	return this->dynamicsDTO;
 }
 
-void Wall::setDynamicsDTO(const Barta::DynamicsDTO&) {
+void Wall::setDynamicsDTO(const Barta::DynamicsDTO& dynamicsDTO) {
 	this->dynamicsDTO = dynamicsDTO;
+}
+int Wall::getZIndex() const {
+    return 0;
 }
